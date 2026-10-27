@@ -1,38 +1,47 @@
 /* ==========================================================
-   TENGKAYU-LINK — Frontend Logic
+   TENGKAYU-LINK — Frontend Logic (Updated with File Support)
    ========================================================== */
 
 // ============ DUMMY DATA ============
 const DUMMY_JOBS = [
-  { id:1, title:'Operator Cold Storage', company:'PT Bahari Nusantara', sector:'Perikanan/Kelautan', region:'Barat', salary:'Rp 3.5 - 4.5 jt', type:'Full-time', desc:'Mengoperasikan cold storage untuk penyimpanan hasil laut. Diutamakan memiliki pengalaman di industri perikanan.', skills:['Higienitas','Operasional','Fisik Kuat'] },
-  { id:2, title:'Barista', company:'Kopi Paguntaka', sector:'Jasa & Perdagangan', region:'Tengah', salary:'Rp 2.5 - 3 jt', type:'Full-time', desc:'Meracik kopi dan melayani pelanggan di kafe lokal. Diutamakan memiliki sertifikat barista.', skills:['Barista','Komunikasi','Pelayanan'] },
-  { id:3, title:'Admin Media Sosial', company:'Wisata Mangrove Tarakan', sector:'Pariwisata/Perhotelan', region:'Timur', salary:'Rp 3 - 4 jt', type:'Kontrak', desc:'Mengelola konten media sosial destinasi wisata. Menguasai Canva, CapCut, dan copywriting.', skills:['Medsos','Desain','Copywriting'] },
-  { id:4, title:'Pembuat Kripik Rumput Laut', company:'UMKM Sinar Laut', sector:'UMKM/Kriya', region:'Utara', salary:'Rp 2 - 2.5 jt', type:'Part-time', desc:'Memproduksi kripik rumput laut rumahan. Disediakan pelatihan untuk pemula.', skills:['Produksi','Kreativitas'] },
-  { id:5, title:'Teknisi Alat Berat', company:'PT Tambang Tarakan', sector:'Pertambangan', region:'Utara', salary:'Rp 6 - 8 jt', type:'Full-time', desc:'Merawat dan memperbaiki alat berat pertambangan. Minimal D3 Teknik Mesin.', skills:['Teknik','Alat Berat','K3'] },
-  { id:6, title:'Kasir Resto Seafood', company:'RM Bandeng Juaro', sector:'Jasa & Perdagangan', region:'Tengah', salary:'Rp 2.8 - 3.2 jt', type:'Full-time', desc:'Menangani transaksi kasir dan pelayanan pelanggan. Ramah dan teliti.', skills:['Kasir','Pelayanan','Teliti'] },
-  { id:7, title:'Pemandu Wisata Mangrove', company:'Tarakan Explore', sector:'Pariwisata/Perhotelan', region:'Timur', salary:'Rp 3 - 4 jt', type:'Kontrak', desc:'Memandu wisatawan di area mangrove. Menguasai Bahasa Inggris dasar.', skills:['Pemandu','Bahasa Inggris','Komunikasi'] },
-  { id:8, title:'Nelayan Kapal Purse Seine', company:'Koperasi Bahari', sector:'Perikanan/Kelautan', region:'Barat', salary:'Rp 4 - 6 jt', type:'Full-time', desc:'Melaut bersama kru kapal purse seine. Berpengalaman di bidang perikanan laut.', skills:['Nelayan','Fisik Kuat'] },
-  { id:9, title:'Admin Gudang', company:'PT Cold Storage Tarakan', sector:'Perikanan/Kelautan', region:'Barat', salary:'Rp 3.2 - 4 jt', type:'Full-time', desc:'Mengelola stok gudang dan administrasi. Menguasai Excel dan sistem inventori.', skills:['Admin','Excel','Inventori'] },
-  { id:10, title:'Pengrajin Tas Rotan', company:'Kriya Paguntaka', sector:'UMKM/Kriya', region:'Tengah', salary:'Rp 2.5 - 3.5 jt', type:'Full-time', desc:'Membuat tas dan kerajinan dari rotan. Disediakan pelatihan bagi pemula.', skills:['Kriya','Kreativitas','Teliti'] },
+  { id:1, title:'Operator Cold Storage', company:'PT Bahari Nusantara', sector:'Perikanan/Kelautan', region:'Barat', salary:'Rp 3.5 - 4.5 jt', type:'Full-time', desc:'Mengoperasikan cold storage untuk penyimpanan hasil laut.', skills:['Higienitas','Operasional','Fisik Kuat'] },
+  { id:2, title:'Barista', company:'Kopi Paguntaka', sector:'Jasa & Perdagangan', region:'Tengah', salary:'Rp 2.5 - 3 jt', type:'Full-time', desc:'Meracik kopi dan melayani pelanggan di kafe lokal.', skills:['Barista','Komunikasi','Pelayanan'] },
+  { id:3, title:'Admin Media Sosial', company:'Wisata Mangrove Tarakan', sector:'Pariwisata/Perhotelan', region:'Timur', salary:'Rp 3 - 4 jt', type:'Kontrak', desc:'Mengelola konten media sosial destinasi wisata.', skills:['Medsos','Desain','Copywriting'] },
+  { id:4, title:'Pembuat Kripik Rumput Laut', company:'UMKM Sinar Laut', sector:'UMKM/Kriya', region:'Utara', salary:'Rp 2 - 2.5 jt', type:'Part-time', desc:'Memproduksi kripik rumput laut rumahan.', skills:['Produksi','Kreativitas'] },
+  { id:5, title:'Teknisi Alat Berat', company:'PT Tambang Tarakan', sector:'Pertambangan', region:'Utara', salary:'Rp 6 - 8 jt', type:'Full-time', desc:'Merawat dan memperbaiki alat berat pertambangan.', skills:['Teknik','Alat Berat','K3'] },
+  { id:6, title:'Kasir Resto Seafood', company:'RM Bandeng Juaro', sector:'Jasa & Perdagangan', region:'Tengah', salary:'Rp 2.8 - 3.2 jt', type:'Full-time', desc:'Menangani transaksi kasir dan pelayanan pelanggan.', skills:['Kasir','Pelayanan','Teliti'] },
+  { id:7, title:'Pemandu Wisata Mangrove', company:'Tarakan Explore', sector:'Pariwisata/Perhotelan', region:'Timur', salary:'Rp 3 - 4 jt', type:'Kontrak', desc:'Memandu wisatawan di area mangrove.', skills:['Pemandu','Bahasa Inggris','Komunikasi'] },
+  { id:8, title:'Nelayan Kapal Purse Seine', company:'Koperasi Bahari', sector:'Perikanan/Kelautan', region:'Barat', salary:'Rp 4 - 6 jt', type:'Full-time', desc:'Melaut bersama kru kapal purse seine.', skills:['Nelayan','Fisik Kuat'] },
+  { id:9, title:'Admin Gudang', company:'PT Cold Storage Tarakan', sector:'Perikanan/Kelautan', region:'Barat', salary:'Rp 3.2 - 4 jt', type:'Full-time', desc:'Mengelola stok gudang dan administrasi.', skills:['Admin','Excel','Inventori'] },
+  { id:10, title:'Pengrajin Tas Rotan', company:'Kriya Paguntaka', sector:'UMKM/Kriya', region:'Tengah', salary:'Rp 2.5 - 3.5 jt', type:'Full-time', desc:'Membuat tas dan kerajinan dari rotan.', skills:['Kriya','Kreativitas','Teliti'] }
 ];
 
 const SECTORS = ['Semua Sektor','Perikanan/Kelautan','Jasa & Perdagangan','UMKM/Kriya','Pariwisata/Perhotelan','Pertambangan'];
 const REGIONS = ['Semua Wilayah','Barat','Tengah','Timur','Utara'];
 
+/* ==========================================================
+   ⚠️ PENTING: Ganti videoUrl dengan link YouTube / GDrive Anda
+   ========================================================== */
 const COURSES = [
-  { id:'c1', title:'Teknik Barista Dasar', duration:8, level:'Dasar', badge:'Lencana Dasar Barista', icon:'☕', desc:'Pelajari dasar-dasar meracik kopi, mulai dari espresso hingga latte art sederhana.',
+  { id:'c1', title:'Teknik Barista Dasar', duration:8, level:'Dasar', badge:'Lencana Dasar Barista', icon:'☕',
+    videoUrl: 'https://www.youtube.com/watch?v=UjK0PMkyS28',
+    desc:'Pelajari dasar-dasar meracik kopi, mulai dari espresso hingga latte art sederhana.',
     questions:[
       { q:'Suhu air ideal untuk menyeduh kopi adalah?', options:['60-70°C','90-96°C','100°C','120°C'], answer:1 },
       { q:'Apa itu espresso?', options:['Kopi instan','Kopi yang diekstrak dengan tekanan tinggi','Kopi susu','Kopi tanpa kafein'], answer:1 },
       { q:'Berapa gram kopi ideal untuk satu shot espresso?', options:['3-4 gram','7-9 gram','15-20 gram','25 gram'], answer:1 }
     ]},
-  { id:'c2', title:'Higienitas Pabrik Ikan', duration:10, level:'Dasar', badge:'Lencana Higienitas Pangan', icon:'🐟', desc:'Standar kebersihan dan keamanan pangan untuk pengolahan hasil laut.',
+  { id:'c2', title:'Higienitas Pabrik Ikan', duration:10, level:'Dasar', badge:'Lencana Higienitas Pangan', icon:'🐟',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    desc:'Standar kebersihan dan keamanan pangan untuk pengolahan hasil laut.',
     questions:[
       { q:'Suhu freezer ideal untuk menyimpan ikan adalah?', options:['-5°C','-10°C','-18°C atau lebih rendah','0°C'], answer:2 },
       { q:'Apa itu HACCP?', options:['Nama merek ikan','Sistem manajemen keamanan pangan','Alat pendingin','Jenis kemasan'], answer:1 },
       { q:'Sebelum mengolah ikan, tangan harus dicuci dengan?', options:['Air biasa','Sabun dan air bersih','Minyak','Alkohol 100%'], answer:1 }
     ]},
-  { id:'c3', title:'Admin Media Sosial', duration:6, level:'Dasar', badge:'Lencana Admin Medsos', icon:'📱', desc:'Kelola konten media sosial untuk bisnis atau UMKM secara profesional.',
+  { id:'c3', title:'Admin Media Sosial', duration:6, level:'Dasar', badge:'Lencana Admin Medsos', icon:'📱',
+    videoUrl: 'https://www.youtube.com/watch?v=V8dYWNqtqv4',
+    desc:'Kelola konten media sosial untuk bisnis atau UMKM secara profesional.',
     questions:[
       { q:'Rasio gambar ideal untuk Instagram post adalah?', options:['16:9','1:1','4:3','9:16'], answer:1 },
       { q:'Apa itu engagement rate?', options:['Jumlah followers','Tingkat interaksi audiens dengan konten','Jumlah postingan','Kecepatan upload'], answer:1 },
@@ -76,7 +85,7 @@ const State = {
       this.posts = JSON.parse(localStorage.getItem('tl_posts') || '[]');
       this.notifications = JSON.parse(localStorage.getItem('tl_notifs') || '[]');
       this.customJobs = JSON.parse(localStorage.getItem('tl_jobs') || '[]');
-      this.companies = JSON.parse(localStorage.getItem('tl_companies') || 'null') || COMPANIES_KYC.map(c=>({...c}));
+      this.companies = JSON.parse(localStorage.getItem('tl_companies') || 'null') || COMPANIES_KYC.map(c => ({...c}));
       this.completedCourses = JSON.parse(localStorage.getItem('tl_completed') || '[]');
       this.verifiedEmployees = JSON.parse(localStorage.getItem('tl_verified') || '[]');
     } catch(e) { console.warn('Load error', e); }
@@ -95,7 +104,6 @@ const State = {
   },
   allJobs() { return [...DUMMY_JOBS, ...this.customJobs]; }
 };
-
 State.load();
 
 // ============ UTILS ============
@@ -117,20 +125,19 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('page-' + name);
   if (page) { page.classList.add('active'); window.scrollTo(0,0); }
-  // hide navbar on dashboard, show on landing
   document.getElementById('navbar').style.display = (name === 'landing') ? '' : 'none';
 }
 
-// ============ NAV ============
+// ============ NAV SCROLL ============
 document.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
+  if (!nav) return;
   if (window.scrollY > 20) nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
   else nav.style.boxShadow = 'none';
 });
 
 // ============ LOGIN ============
 let selectedRole = null;
-
 function openLogin(role) {
   document.getElementById('loginModal').classList.add('active');
   document.getElementById('roleGrid').style.display = '';
@@ -150,8 +157,7 @@ function selectRole(role) {
   document.querySelectorAll('.role-card').forEach(c => c.classList.toggle('active', c.dataset.role === role));
   document.getElementById('roleGrid').style.display = 'none';
   document.getElementById('loginForm').style.display = 'block';
-  const label = document.getElementById('loginLabel');
-  label.textContent = role === 'perusahaan' ? 'Nama Perusahaan / UMKM' : role === 'admin' ? 'Nama Admin' : 'Nama Lengkap';
+  document.getElementById('loginLabel').textContent = role === 'perusahaan' ? 'Nama Perusahaan / UMKM' : role === 'admin' ? 'Nama Admin' : 'Nama Lengkap';
   document.getElementById('loginName').value = '';
   document.getElementById('loginName').focus();
 }
@@ -225,7 +231,7 @@ function renderYuwanaOverview() {
   const recs = COURSES.filter(c => !State.completedCourses.includes(c.id)).slice(0, 2);
 
   document.getElementById('yuwana-overview').innerHTML = `
-    <div class="passport-header" style="background:linear-gradient(135deg,#2563eb,#1e40af);">
+    <div class="passport-header">
       <div class="avatar">${escapeHtml(State.user.name.charAt(0).toUpperCase())}</div>
       <div>
         <h2>Halo, ${escapeHtml(State.user.name.split(' ')[0])}! 👋</h2>
@@ -238,13 +244,10 @@ function renderYuwanaOverview() {
       <div class="stat-card"><div class="stat-icon">🎓</div><div><strong>${courses}</strong><span>Kelas Selesai</span></div></div>
       <div class="stat-card"><div class="stat-icon">🔔</div><div><strong>${State.notifications.length}</strong><span>Notifikasi Radar</span></div></div>
     </div>
-
     <h3 class="section-title">💼 Rekomendasi Lowongan</h3>
     <div class="card-grid">${jobs.map(jobCardHTML).join('')}</div>
-
     <h3 class="section-title">🎓 Rekomendasi Kelas</h3>
     <div class="card-grid">${recs.map(courseCardHTML).join('') || '<p style="color:var(--gray-500)">Semua kelas sudah diselesaikan! 🎉</p>'}</div>
-
     ${State.applications.length ? `
       <h3 class="section-title">📋 Status Lamaran Terakhir</h3>
       <div class="card">
@@ -268,11 +271,9 @@ function renderDermaga() {
   document.getElementById('yuwana-dermaga').innerHTML = `
     <div class="map-container">
       <svg viewBox="0 0 500 260" class="map-svg">
-        <defs>
-          <linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#bfdbfe"/>
-          </linearGradient>
-        </defs>
+        <defs><linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#bfdbfe"/>
+        </linearGradient></defs>
         <rect width="500" height="260" fill="url(#waterGrad)" rx="16"/>
         <path d="M50,110 Q80,70 150,80 L200,60 Q250,55 300,65 L380,70 Q430,80 450,120 Q460,150 430,180 Q380,200 320,195 L240,205 Q180,210 130,195 Q80,185 55,160 Q40,135 50,110 Z" fill="#bbf7d0" stroke="#10b981" stroke-width="2.5"/>
         <g class="map-zone" onclick="selectRegion('Utara')" style="cursor:pointer">
@@ -298,17 +299,15 @@ function renderDermaga() {
         <span><span class="dot" style="background:#60a5fa"></span>Klik area untuk filter</span>
       </div>
     </div>
-
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
-      <select id="sectorFilter" onchange="filterSector=this.value;renderJobList()" style="padding:10px 16px;border-radius:8px;border:1.5px solid var(--gray-300);font-family:inherit;font-size:14px;">
+      <select onchange="filterSector=this.value;renderJobList()" style="padding:10px 16px;border-radius:8px;border:1.5px solid var(--gray-300);font-family:inherit;font-size:14px;">
         ${SECTORS.map(s => `<option ${s===filterSector?'selected':''}>${s}</option>`).join('')}
       </select>
-      <select id="regionFilter" onchange="filterRegion=this.value;renderJobList()" style="padding:10px 16px;border-radius:8px;border:1.5px solid var(--gray-300);font-family:inherit;font-size:14px;">
+      <select onchange="filterRegion=this.value;renderJobList()" style="padding:10px 16px;border-radius:8px;border:1.5px solid var(--gray-300);font-family:inherit;font-size:14px;">
         ${REGIONS.map(r => `<option ${r===filterRegion?'selected':''}>${r}</option>`).join('')}
       </select>
       <button class="btn btn-ghost" onclick="filterSector='Semua Sektor';filterRegion='Semua Wilayah';renderDermaga()">🔄 Reset Filter</button>
     </div>
-
     <h3 class="section-title">Daftar Lowongan (<span id="jobCount">0</span>)</h3>
     <div class="card-grid" id="jobList"></div>
   `;
@@ -328,8 +327,7 @@ function renderJobList() {
   const count = document.getElementById('jobCount');
   if (count) count.textContent = jobs.length;
   if (!container) return;
-  if (!jobs.length) { container.innerHTML = '<p style="color:var(--gray-500);padding:20px;">Tidak ada lowongan sesuai filter. Coba ubah filter.</p>'; return; }
-  container.innerHTML = jobs.map(jobCardHTML).join('');
+  container.innerHTML = jobs.length ? jobs.map(jobCardHTML).join('') : '<p style="color:var(--gray-500);padding:20px;">Tidak ada lowongan sesuai filter.</p>';
 }
 function jobCardHTML(job) {
   const applied = State.applications.some(a => a.jobId === job.id);
@@ -377,14 +375,8 @@ function applyJob(id) {
   const job = State.allJobs().find(j => j.id === id);
   if (!job) return;
   if (State.applications.some(a => a.jobId === id)) { showToast('Sudah dilamar!', 'yellow'); return; }
-  State.applications.push({
-    jobId: id, title: job.title, company: job.company,
-    appliedAt: new Date().toISOString(), status: 'Terkirim'
-  });
-  // Add notification
-  State.notifications.unshift({ title:'Lamaran Terkirim', text:`Lamaran untuk "${job.title}" telah dikirim ke ${job.company}.`, time: new Date().toLocaleString('id-ID') });
-  State.save();
-  updateNotifDot();
+  State.applications.push({ jobId: id, title: job.title, company: job.company, appliedAt: new Date().toISOString(), status: 'Terkirim' });
+  addNotification('Lamaran Terkirim', `Lamaran untuk "${job.title}" telah dikirim ke ${job.company}.`);
   closeJob();
   showToast('Lamaran berhasil dikirim! ✅', 'success');
   if (document.getElementById('yuwana-dermaga').classList.contains('active')) renderDermaga();
@@ -394,7 +386,7 @@ function applyJob(id) {
 function toggleNotifications() {
   const panel = document.getElementById('notifPanel');
   if (panel.classList.contains('show')) { panel.classList.remove('show'); return; }
-  const notifs = State.notifications.length ? State.notifications : [{ title:'Selamat Datang', text:'Belum ada notifikasi. Lengkapi profil dan ambil kelas untuk mendapatkan rekomendasi lowongan.', time:'—' }];
+  const notifs = State.notifications.length ? State.notifications : [{ title:'Selamat Datang', text:'Belum ada notifikasi. Lengkapi profil dan ambil kelas.', time:'—' }];
   panel.innerHTML = `<div style="padding:14px 16px;border-bottom:1px solid var(--gray-200);font-weight:700;color:var(--blue-900);">🔔 Radar Karir</div>` +
     notifs.slice(0, 15).map(n => `<div class="notif-item"><strong>${escapeHtml(n.title)}</strong>${escapeHtml(n.text)}<br><small>${escapeHtml(n.time)}</small></div>`).join('');
   panel.classList.add('show');
@@ -426,17 +418,15 @@ function renderMahir() {
         </div>`;
       }).join('')}
     </div>
-
     <h3 class="section-title" style="margin-top:32px;">🎥 Webinar TENGKAYU-LINK</h3>
     <div class="card-grid">
       ${WEBINARS.map(w => `<div class="card">
         <span class="job-tag yellow">📅 ${escapeHtml(w.date)} • ${escapeHtml(w.time)}</span>
         <h4 style="margin:12px 0 8px;color:var(--blue-900);">${escapeHtml(w.title)}</h4>
         <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">🎤 ${escapeHtml(w.speaker)}</p>
-        <button class="btn btn-primary btn-sm" onclick="showToast('Pendaftaran webinar berhasil! Cek email Anda.','success')">Daftar Webinar</button>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Pendaftaran webinar berhasil!','success')">Daftar Webinar</button>
       </div>`).join('')}
     </div>
-
     ${State.badges.length ? `
       <h3 class="section-title" style="margin-top:32px;">🏅 Lencana Anda (${State.badges.length})</h3>
       <div style="display:flex;gap:16px;flex-wrap:wrap;">
@@ -470,29 +460,46 @@ function openCourse(id) {
   const done = State.completedCourses.includes(id);
   quizState = null;
   if (videoInterval) { clearInterval(videoInterval); videoInterval = null; }
+  const media = parseMediaUrl(currentCourse.videoUrl || '');
 
   document.getElementById('courseContent').innerHTML = `
     <h2 style="color:var(--blue-900);margin-bottom:8px;">${currentCourse.icon} ${escapeHtml(currentCourse.title)}</h2>
     <p style="color:var(--gray-600);margin-bottom:16px;">${escapeHtml(currentCourse.desc)}</p>
-    <div class="video-player" id="videoPlayer">
-      <div class="video-play" id="videoPlay" onclick="playVideo()">
-        <div class="video-play-btn">▶</div>
-      </div>
-      <div class="video-timer" id="videoTimer">00:00 / 0${currentCourse.duration}:00</div>
-      <div class="video-bar"><div id="videoProgress"></div></div>
-    </div>
+    <div id="videoArea">${media ? renderMediaEmbed(media) : renderFallbackVideo()}</div>
     <div id="quizArea"></div>
     ${done
       ? `<div style="background:#f0fdf4;padding:12px 16px;border-radius:8px;color:#065f46;margin-top:16px;font-weight:600;">✅ Anda sudah menyelesaikan kelas ini dan memiliki ${escapeHtml(currentCourse.badge)}.</div>`
-      : `<button class="btn btn-primary btn-block" id="quizBtn" style="margin-top:16px;display:none;" onclick="startQuiz()">📝 Mulai Kuis</button>`}
+      : `<button class="btn btn-primary btn-block" id="quizBtn" style="margin-top:16px;${media?'':'display:none;'}" onclick="startQuiz()">📝 Mulai Kuis</button>`}
   `;
   document.getElementById('courseModal').classList.add('active');
+
+  if (!media) {
+    const playEl = document.getElementById('videoPlay');
+    if (playEl) playEl.onclick = playVideoFallback;
+  }
 }
-function closeCourse() {
-  document.getElementById('courseModal').classList.remove('active');
-  if (videoInterval) { clearInterval(videoInterval); videoInterval = null; }
+function renderMediaEmbed(media) {
+  if (media.type === 'youtube' || media.type === 'gdrive' || media.type === 'vimeo') {
+    return `<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:16px;background:#000;">
+      <iframe src="${media.embed}" width="100%" height="100%" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen style="display:block;"></iframe>
+    </div>
+    <p style="font-size:12px;color:var(--gray-500);margin-bottom:12px;">Sumber: ${media.type === 'gdrive' ? 'Google Drive' : media.type === 'youtube' ? 'YouTube' : 'Vimeo'}</p>`;
+  }
+  if (media.type === 'direct-video') return `<video src="${media.url}" controls style="width:100%;border-radius:12px;margin-bottom:16px;background:#000;"></video>`;
+  if (media.type === 'direct-image') return `<img src="${media.url}" alt="Materi" style="width:100%;border-radius:12px;margin-bottom:16px;">`;
+  return '';
 }
-function playVideo() {
+function renderFallbackVideo() {
+  return `<div class="video-player" id="videoPlayer">
+    <div class="video-play" id="videoPlay"><div class="video-play-btn">▶</div></div>
+    <div class="video-timer" id="videoTimer">00:00 / 0${currentCourse.duration}:00</div>
+    <div class="video-bar"><div id="videoProgress"></div></div>
+  </div>
+  <p style="font-size:12px;color:var(--gray-500);margin-bottom:12px;">💡 Video contoh (belum ada URL). Edit COURSES di script.js untuk tambah URL.</p>`;
+}
+function playVideoFallback() {
   if (videoInterval) return;
   document.getElementById('videoPlay').style.display = 'none';
   let sec = 0;
@@ -511,6 +518,10 @@ function playVideo() {
       showToast('Video selesai! Silakan ikuti kuis.', 'success');
     }
   }, 1000);
+}
+function closeCourse() {
+  document.getElementById('courseModal').classList.remove('active');
+  if (videoInterval) { clearInterval(videoInterval); videoInterval = null; }
 }
 function startQuiz() {
   quizState = { idx: 0, correct: 0 };
@@ -566,7 +577,7 @@ function showBadge() {
     <h2 style="color:var(--blue-900);margin-bottom:8px;">Selamat! 🎉</h2>
     <p style="color:var(--gray-600);margin-bottom:20px;">Anda mendapatkan</p>
     <h3 style="color:var(--yellow-600);font-size:22px;margin-bottom:8px;">${escapeHtml(currentCourse.badge)}</h3>
-    <p style="color:var(--gray-500);font-size:13px;margin-bottom:24px;">Lencana ini otomatis tersimpan di Paspor Karya Anda dan dapat diverifikasi melalui QR Code.</p>
+    <p style="color:var(--gray-500);font-size:13px;margin-bottom:24px;">Lencana otomatis tersimpan di Paspor Karya.</p>
     <button class="btn btn-primary btn-block" onclick="closeBadge()">Lihat Lencana Saya</button>
   `;
   document.getElementById('badgeModal').classList.add('active');
@@ -579,10 +590,9 @@ function closeBadge() {
 
 // ============ JARING USAHA ============
 let legalitasState = null;
-let permodalanState = null;
+let legalFileCache = null;
 
 function renderUsaha() {
-  const posts = State.posts;
   document.getElementById('yuwana-usaha').innerHTML = `
     <h3 class="section-title">📋 Klinik Legalitas Terpadu</h3>
     <div class="card-grid">
@@ -597,16 +607,13 @@ function renderUsaha() {
         <p style="font-size:13px;color:var(--gray-600);">Panduan pendaftaran sertifikasi halal</p>
       </div>
     </div>
-
     <div id="legalitasWizard" style="margin-top:20px;"></div>
-
     <h3 class="section-title" style="margin-top:32px;">🤝 Kolam Kemitraan</h3>
     <div class="card" style="margin-bottom:16px;">
       <textarea id="postInput" placeholder="Contoh: Dicari supplier kardus kemasan di area Tarakan Barat..." style="width:100%;min-height:80px;padding:12px;border:1.5px solid var(--gray-300);border-radius:8px;font-family:inherit;font-size:14px;margin-bottom:10px;"></textarea>
       <button class="btn btn-primary" onclick="createPost()">📤 Posting</button>
     </div>
     <div id="postList"></div>
-
     <h3 class="section-title" style="margin-top:32px;">💰 Radar Permodalan</h3>
     <div class="card">
       <h4 style="color:var(--blue-900);margin-bottom:12px;">Kuota Dana Tersedia</h4>
@@ -621,8 +628,8 @@ function renderUsaha() {
         </div>
       </div>
       <div class="form-group">
-        <label>Upload Laporan Laba Rugi Sederhana (PDF)</label>
-        <input type="file" id="permodalanFile" accept=".pdf,.jpg,.png">
+        <label>Upload Laporan Laba Rugi Sederhana (PDF/JPG/PNG)</label>
+        <input type="file" id="permodalanFile" accept=".pdf,.jpg,.jpeg,.png">
       </div>
       <button class="btn btn-yellow btn-block" onclick="submitPermodalan()">📤 Ajukan ke Mitra Bank (BRI/BPD)</button>
       <div id="permodalanStatus" style="margin-top:12px;"></div>
@@ -632,15 +639,15 @@ function renderUsaha() {
 }
 function startLegalitas(type) {
   legalitasState = { type, step: 0, data: {} };
+  legalFileCache = null;
   renderLegalitasWizard();
 }
 function renderLegalitasWizard() {
   const w = document.getElementById('legalitasWizard');
   if (!w || !legalitasState) return;
-  const steps = legalitasState.type === 'nib'
+  const stepNames = legalitasState.type === 'nib'
     ? ['Data Usaha','Jenis Usaha','Upload Dokumen','Review']
     : ['Data Produk','Bahan Baku','Proses Produksi','Review'];
-  const stepNames = steps;
   const step = legalitasState.step;
   let content = '';
   if (step === 0) content = `<div class="form-group"><label>Nama Usaha</label><input type="text" id="legal_nama" placeholder="Contoh: UMKM Sambal Bu Siti" value="${legalitasState.data.nama||''}"></div>
@@ -649,32 +656,45 @@ function renderLegalitasWizard() {
     <select id="legal_jenis"><option>Perdagangan</option><option>Jasa</option><option>Produksi</option><option>Kuliner</option></select></div>`;
   else if (step === 1 && legalitasState.type === 'halal') content = `<div class="form-group"><label>Nama Produk</label><input type="text" id="legal_produk" placeholder="Contoh: Sambal Bandeng" value="${legalitasState.data.produk||''}"></div>
     <div class="form-group"><label>Bahan Baku Utama</label><textarea id="legal_bahan" placeholder="Contoh: Ikan bandeng, cabai, bawang, garam">${legalitasState.data.bahan||''}</textarea></div>`;
-  else if (step === 2) content = `<div class="form-group"><label>Upload ${legalitasState.type==='nib'?'KTP/NPWP':'Foto Produk'}</label>
-    <input type="file" accept=".jpg,.png,.pdf"></div>
-    <div style="background:var(--blue-50);padding:12px;border-radius:8px;font-size:13px;color:var(--blue-700);">📌 Untuk demo, upload disimulasikan.</div>`;
+  else if (step === 2) content = `<div class="form-group">
+    <label>Upload ${legalitasState.type==='nib'?'KTP/NPWP':'Foto Produk'}</label>
+    <input type="file" id="legal_file" accept=".jpg,.jpeg,.png,.pdf" onchange="previewLegalFile(event)">
+    <div id="legal_file_preview" style="margin-top:8px;"></div>
+  </div>`;
   else content = `<div style="background:#f0fdf4;padding:16px;border-radius:8px;">
     <h4 style="color:#065f46;margin-bottom:8px;">✅ Ringkasan Pengajuan</h4>
     <p style="font-size:13px;color:var(--gray-700);">Jenis: <strong>${legalitasState.type.toUpperCase()}</strong></p>
+    <p style="font-size:13px;color:var(--gray-700);">Dokumen: <strong>${legalFileCache ? escapeHtml(legalFileCache.name) : 'Belum dipilih'}</strong></p>
     <p style="font-size:13px;color:var(--gray-700);">Status: <strong style="color:#059669;">Siap Dikirim</strong></p>
   </div>`;
-
   w.innerHTML = `<div class="card">
     <div style="display:flex;gap:4px;margin-bottom:16px;">
       ${stepNames.map((s,i) => `<div style="flex:1;height:6px;border-radius:3px;background:${i<=step?'var(--blue-500)':'var(--gray-200)'};"></div>`).join('')}
     </div>
     <h4 style="color:var(--blue-900);margin-bottom:4px;">Langkah ${step+1}/${stepNames.length}: ${stepNames[step]}</h4>
     <div style="margin-top:16px;">${content}</div>
-    <div style="display:flex;gap:8px;margin-top:16px;">
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
       ${step>0?`<button class="btn btn-ghost" onclick="legalitasState.step--;renderLegalitasWizard()">← Kembali</button>`:''}
       ${step<stepNames.length-1
         ? `<button class="btn btn-primary" onclick="nextLegalitasStep()">Lanjut →</button>`
         : `<button class="btn btn-primary" onclick="finishLegalitas()">🚀 Kirim Pengajuan</button>`}
-      <button class="btn btn-ghost" onclick="legalitasState=null;document.getElementById('legalitasWizard').innerHTML=''">Batal</button>
+      <button class="btn btn-ghost" onclick="legalitasState=null;legalFileCache=null;document.getElementById('legalitasWizard').innerHTML=''">Batal</button>
     </div>
   </div>`;
 }
+function previewLegalFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!['application/pdf','image/jpeg','image/png'].includes(file.type)) {
+    showToast('Format: PDF/JPG/PNG!', 'error'); return;
+  }
+  if (file.size > 10 * 1024 * 1024) { showToast('Maks 10MB!', 'error'); return; }
+  legalFileCache = file;
+  document.getElementById('legal_file_preview').innerHTML = `
+    <small style="color:#059669;">✅ ${escapeHtml(file.name)} — ${(file.size/1024).toFixed(1)} KB</small>
+  `;
+}
 function nextLegalitasStep() {
-  // capture data
   if (legalitasState.step === 0) {
     legalitasState.data.nama = document.getElementById('legal_nama')?.value || '';
     legalitasState.data.alamat = document.getElementById('legal_alamat')?.value || '';
@@ -688,8 +708,13 @@ function nextLegalitasStep() {
   legalitasState.step++;
   renderLegalitasWizard();
 }
-function finishLegalitas() {
-  showToast(`Pengajuan ${legalitasState.type.toUpperCase()} berhasil dikirim! Menunggu verifikasi.`, 'success');
+async function finishLegalitas() {
+  let fileId = null;
+  if (legalFileCache) {
+    fileId = await uploadDocument(legalFileCache, 'legalitas_' + legalitasState.type);
+    legalFileCache = null;
+  }
+  showToast(`Pengajuan ${legalitasState.type.toUpperCase()} berhasil dikirim!${fileId ? ' Dokumen tersimpan.' : ''}`, 'success');
   legalitasState = null;
   document.getElementById('legalitasWizard').innerHTML = '';
 }
@@ -716,26 +741,39 @@ function createPost() {
   renderPosts();
   showToast('Postingan berhasil dibuat!', 'success');
 }
-function submitPermodalan() {
-  const file = document.getElementById('permodalanFile');
-  if (!file.files.length) { showToast('Upload dokumen terlebih dahulu!', 'error'); return; }
+async function submitPermodalan() {
+  const fileInput = document.getElementById('permodalanFile');
+  if (!fileInput.files.length) { showToast('Upload dokumen terlebih dahulu!', 'error'); return; }
+  const file = fileInput.files[0];
+  const dbId = await uploadDocument(file, 'permodalan');
+  if (!dbId) return;
   document.getElementById('permodalanStatus').innerHTML = `
     <div style="background:#fef3c7;padding:14px;border-radius:8px;margin-top:12px;">
       <strong style="color:var(--yellow-600);">📤 Pengajuan Terkirim</strong>
-      <p style="font-size:13px;color:var(--gray-700);margin-top:4px;">Dokumen Anda sedang ditinjau oleh mitra bank. Status: <strong>Dalam Review</strong></p>
-      <div style="height:6px;background:rgba(0,0,0,0.1);border-radius:3px;margin-top:8px;"><div style="height:100%;width:30%;background:var(--yellow-500);border-radius:3px;"></div></div>
+      <p style="font-size:13px;color:var(--gray-700);margin-top:4px;">
+        Dokumen <strong>${escapeHtml(file.name)}</strong> (${(file.size/1024).toFixed(1)} KB) terkirim.<br>
+        Status: <strong>Dalam Review Bank</strong>
+      </p>
+      <div style="height:6px;background:rgba(0,0,0,0.1);border-radius:3px;margin-top:8px;">
+        <div style="height:100%;width:30%;background:var(--yellow-500);border-radius:3px;"></div>
+      </div>
     </div>`;
-  showToast('Pengajuan permodalan terkirim ke bank!', 'success');
+  showToast('Pengajuan permodalan + dokumen terkirim!', 'success');
 }
 
 // ============ PASPOR KARYA ============
-function renderPaspor() {
+let uploadState = { file: null, previewUrl: null };
+
+async function renderPaspor() {
   const badges = State.badges;
   const qrData = encodeURIComponent(`${window.location.origin}/verify/${encodeURIComponent(State.user.name)}`);
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${qrData}&color=1e3a8a&bgcolor=ffffff`;
+
   document.getElementById('yuwana-paspor').innerHTML = `
     <div class="passport-header">
-      <div class="avatar">${escapeHtml(State.user.name.charAt(0).toUpperCase())}</div>
+      <div class="avatar" id="avatarDisplay" style="cursor:pointer;" onclick="openAvatarUpload()" title="Klik untuk ganti foto">
+        ${escapeHtml(State.user.name.charAt(0).toUpperCase())}
+      </div>
       <div>
         <h2>${escapeHtml(State.user.name)}</h2>
         <p>${badges.length} Lencana • ${State.applications.length} Lamaran • ${State.completedCourses.length} Kelas</p>
@@ -745,12 +783,11 @@ function renderPaspor() {
         <small>SCAN UNTUK VERIFIKASI</small>
       </div>
     </div>
-
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
       <button class="btn btn-primary" onclick="previewCV()">📄 Preview & Unduh CV</button>
-      <button class="btn btn-yellow" onclick="addPortfolio()">➕ Tambah Portofolio</button>
+      <button class="btn btn-yellow" onclick="openUploadModal()">➕ Tambah Portofolio</button>
+      <button class="btn btn-ghost" onclick="openAvatarUpload()">🖼️ Ganti Foto Profil</button>
     </div>
-
     <h3 class="section-title">🏅 Lencana Keahlian</h3>
     ${badges.length ? `<div style="display:flex;gap:16px;flex-wrap:wrap;">
       ${badges.map(b => `<div style="text-align:center;">
@@ -758,13 +795,14 @@ function renderPaspor() {
         <small style="font-weight:600;color:var(--blue-900);display:block;margin-top:4px;">${escapeHtml(b.name)}</small>
       </div>`).join('')}
     </div>` : '<p style="color:var(--gray-500);">Belum ada lencana. Selesaikan kelas di Layar Mahir!</p>'}
-
     <h3 class="section-title">🎨 Etalase Portofolio</h3>
     <div class="portfolio-grid" id="portfolioGrid">
-      ${State.portfolio.length ? State.portfolio.map(p => `<div class="portfolio-item" title="${escapeHtml(p.title)}" onclick="showToast('${escapeHtml(p.title)}','yellow')">${p.icon||'🖼️'}</div>`).join('') : ''}
-      <div class="portfolio-item" onclick="addPortfolio()" style="background:var(--gray-100);color:var(--gray-500);">➕</div>
+      ${State.portfolio.map(p => p.dbId
+        ? `<div class="portfolio-item" id="port_${p.dbId}" onclick="viewPortfolio(${p.dbId})" style="position:relative;overflow:hidden;background:var(--gray-100);">⏳</div>`
+        : `<div class="portfolio-item">${p.icon || '🖼️'}</div>`
+      ).join('')}
+      <div class="portfolio-item" onclick="openUploadModal()" style="background:var(--gray-100);color:var(--gray-500);">➕</div>
     </div>
-
     ${State.verifiedEmployees.length ? `
       <h3 class="section-title">✅ Verifikasi Kinerja Perusahaan</h3>
       ${State.verifiedEmployees.map(v => `<div class="card" style="margin-bottom:8px;">
@@ -775,13 +813,105 @@ function renderPaspor() {
       </div>`).join('')}
     ` : ''}
   `;
+
+  // Load avatar image
+  if (State.user.avatarId) {
+    const url = await getStoredFileUrl(State.user.avatarId);
+    const el = document.getElementById('avatarDisplay');
+    if (el && url) el.innerHTML = `<img src="${url}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  }
+  // Load portfolio images
+  for (const p of State.portfolio) {
+    if (p.dbId) {
+      const url = await getStoredFileUrl(p.dbId);
+      const el = document.getElementById(`port_${p.dbId}`);
+      if (el && url) el.innerHTML = `<img src="${url}" alt="${escapeHtml(p.title)}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    }
+  }
 }
+function openUploadModal() {
+  uploadState = { file: null, previewUrl: null };
+  document.getElementById('uploadTitle').value = '';
+  document.getElementById('uploadImageInput').value = '';
+  document.getElementById('uploadPreview').innerHTML = '';
+  document.getElementById('uploadModal').classList.add('active');
+}
+function closeUploadModal() {
+  if (uploadState.previewUrl) URL.revokeObjectURL(uploadState.previewUrl);
+  document.getElementById('uploadModal').classList.remove('active');
+}
+function previewUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('Harus gambar!', 'error'); return; }
+  if (file.size > 5 * 1024 * 1024) { showToast('Maksimal 5MB!', 'error'); return; }
+  if (uploadState.previewUrl) URL.revokeObjectURL(uploadState.previewUrl);
+  uploadState.file = file;
+  uploadState.previewUrl = URL.createObjectURL(file);
+  document.getElementById('uploadPreview').innerHTML = `
+    <img src="${uploadState.previewUrl}" alt="Preview" style="width:100%;max-height:240px;object-fit:cover;border-radius:8px;">
+    <small style="color:var(--gray-500);">${escapeHtml(file.name)} — ${(file.size/1024).toFixed(1)} KB</small>
+  `;
+}
+async function confirmPortfolioUpload() {
+  const title = document.getElementById('uploadTitle').value.trim();
+  if (!title) { showToast('Judul wajib diisi!', 'error'); return; }
+  if (!uploadState.file) { showToast('Pilih gambar dulu!', 'error'); return; }
+  const dbId = await uploadImage(uploadState.file, 'portfolio');
+  if (!dbId) return;
+  State.portfolio.push({ dbId, title, icon: '🖼️', time: Date.now() });
+  State.save();
+  closeUploadModal();
+  renderPaspor();
+  showToast('Portofolio berhasil disimpan!', 'success');
+}
+async function viewPortfolio(dbId) {
+  const item = State.portfolio.find(p => p.dbId === dbId);
+  const title = item?.title || 'Portofolio';
+  const url = await getStoredFileUrl(dbId);
+  if (!url) { showToast('File tidak ditemukan', 'error'); return; }
+  document.getElementById('fileViewContent').innerHTML = `
+    <h3 style="margin-bottom:12px;">${escapeHtml(title)}</h3>
+    <img src="${url}" alt="${escapeHtml(title)}" style="width:100%;border-radius:8px;">
+    <button class="btn btn-ghost btn-block" style="margin-top:16px;color:#dc2626;border-color:#fca5a5;" onclick="deletePortfolio(${dbId})">🗑️ Hapus Portofolio</button>
+  `;
+  document.getElementById('fileViewModal').classList.add('active');
+}
+async function deletePortfolio(dbId) {
+  if (!confirm('Hapus portofolio ini?')) return;
+  await FileStore.delete(dbId);
+  State.portfolio = State.portfolio.filter(p => p.dbId !== dbId);
+  State.save();
+  closeFileView();
+  renderPaspor();
+  showToast('Portofolio dihapus', 'yellow');
+}
+function closeFileView() { document.getElementById('fileViewModal').classList.remove('active'); }
+function openAvatarUpload() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const dbId = await uploadImage(file, 'avatar');
+    if (!dbId) return;
+    if (State.user.avatarId) await FileStore.delete(State.user.avatarId).catch(()=>{});
+    State.user.avatarId = dbId;
+    State.save();
+    renderPaspor();
+    showToast('Foto profil diperbarui!', 'success');
+  };
+  input.click();
+}
+
+// ============ CV ============
 function previewCV() {
   const user = State.user;
   const badges = State.badges;
   const apps = State.applications;
   document.getElementById('cvContent').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
       <h2 style="color:var(--blue-900);">📄 Preview CV</h2>
       <button class="btn btn-primary btn-sm" onclick="downloadCV()">⬇️ Unduh PDF</button>
     </div>
@@ -791,14 +921,14 @@ function previewCV() {
         <p style="color:var(--gray-600);margin-top:4px;">${escapeHtml(user.email || 'email@contoh.com')} • Tarakan, Kalimantan Utara</p>
       </div>
       <h3 style="color:var(--blue-700);margin-bottom:8px;">🎓 Ringkasan</h3>
-      <p style="color:var(--gray-700);font-size:14px;margin-bottom:16px;">Pencari kerja aktif di TENGKAYU-LINK dengan ${badges.length} lencana keahlian terverifikasi dan ${apps.length} lamaran terkirim. Siap berkontribusi di sektor riil Tarakan.</p>
+      <p style="color:var(--gray-700);font-size:14px;margin-bottom:16px;">Pencari kerja aktif di TENGKAYU-LINK dengan ${badges.length} lencana terverifikasi dan ${apps.length} lamaran terkirim.</p>
       <h3 style="color:var(--blue-700);margin-bottom:8px;">🏅 Lencana Keahlian</h3>
       <ul style="margin-left:20px;color:var(--gray-700);font-size:14px;margin-bottom:16px;">
         ${badges.length ? badges.map(b => `<li>${escapeHtml(b.name)}</li>`).join('') : '<li>Belum ada lencana</li>'}
       </ul>
       <h3 style="color:var(--blue-700);margin-bottom:8px;">📥 Pengalaman Melamar</h3>
       <ul style="margin-left:20px;color:var(--gray-700);font-size:14px;">
-        ${apps.length ? apps.map(a => `<li>${escapeHtml(a.title)} — ${escapeHtml(a.company)}</li>`).join('') : '<li>Belum ada pengalaman melamar</li>'}
+        ${apps.length ? apps.map(a => `<li>${escapeHtml(a.title)} — ${escapeHtml(a.company)}</li>`).join('') : '<li>Belum ada</li>'}
       </ul>
     </div>
   `;
@@ -817,23 +947,13 @@ function downloadCV() {
   .footer{margin-top:40px;font-size:12px;color:#666;text-align:center;}</style></head><body>
   <h1>${user.name}</h1>
   <p>${user.email || 'email@contoh.com'} • Tarakan, Kalimantan Utara</p>
-  <h3>Ringkasan</h3><p>Pencari kerja aktif dengan ${badges.length} lencana keahlian terverifikasi.</p>
   <h3>Lencana Keahlian</h3><ul>${badges.map(b => `<li>${b.name}</li>`).join('') || '<li>-</li>'}</ul>
   <h3>Pengalaman Melamar</h3><ul>${apps.map(a => `<li>${a.title} — ${a.company}</li>`).join('') || '<li>-</li>'}</ul>
-  <p class="footer">Dibuat dengan TENGKAYU-LINK — ${new Date().toLocaleDateString('id-ID')}</p>
+  <p class="footer">TENGKAYU-LINK — ${new Date().toLocaleDateString('id-ID')}</p>
   </body></html>`);
   w.document.close();
   setTimeout(() => w.print(), 500);
   showToast('CV siap diunduh sebagai PDF', 'success');
-}
-function addPortfolio() {
-  const icons = ['🎨','📸','🎭','🖼️','📐','🎬'];
-  const titles = ['Karya Seni','Foto Produk','Sertifikat','Desain Grafis','Sketsa','Video'];
-  const idx = State.portfolio.length % icons.length;
-  State.portfolio.push({ icon: icons[idx], title: titles[idx] });
-  State.save();
-  renderPaspor();
-  showToast('Portofolio ditambahkan!', 'success');
 }
 
 // ============ PERUSAHAAN DASHBOARD ============
@@ -855,10 +975,7 @@ function renderPerusahaanOverview() {
   document.getElementById('perusahaan-overview').innerHTML = `
     <div class="passport-header" style="background:linear-gradient(135deg,#d97706,#f59e0b);">
       <div class="avatar">${escapeHtml(State.user.name.charAt(0).toUpperCase())}</div>
-      <div>
-        <h2>${escapeHtml(State.user.name)}</h2>
-        <p>✅ Tier KYC Terverifikasi</p>
-      </div>
+      <div><h2>${escapeHtml(State.user.name)}</h2><p>✅ Tier KYC Terverifikasi</p></div>
     </div>
     <div class="grid-4">
       <div class="stat-card"><div class="stat-icon">📝</div><div><strong>${myJobs.length}</strong><span>Lowongan Diposting</span></div></div>
@@ -867,7 +984,7 @@ function renderPerusahaanOverview() {
       <div class="stat-card"><div class="stat-icon">⭐</div><div><strong>4.8</strong><span>Rating Perusahaan</span></div></div>
     </div>
     <h3 class="section-title">📋 Lowongan Aktif</h3>
-    ${myJobs.length ? `<div class="card-grid">${myJobs.map(jobCardHTML).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lowongan. Post lowongan pertama Anda!</p>'}
+    ${myJobs.length ? `<div class="card-grid">${myJobs.map(jobCardHTML).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lowongan.</p>'}
   `;
 }
 function renderPostJob() {
@@ -886,14 +1003,20 @@ function renderPostJob() {
         <select id="pj_type"><option>Full-time</option><option>Part-time</option><option>Kontrak</option><option>Magang</option></select>
       </div>
       <div class="form-group"><label>Deskripsi</label><textarea id="pj_desc" placeholder="Jelaskan tanggung jawab dan kualifikasi" style="min-height:100px;"></textarea></div>
+      <div class="form-group"><label>Logo Perusahaan (opsional)</label>
+        <input type="file" id="pj_logo" accept="image/*">
+      </div>
       <button class="btn btn-primary btn-block" onclick="postJob()">🚀 Posting Lowongan</button>
     </div>
   `;
 }
-function postJob() {
+async function postJob() {
   const title = document.getElementById('pj_title').value.trim();
   const desc = document.getElementById('pj_desc').value.trim();
   if (!title || !desc) { showToast('Judul dan deskripsi wajib diisi!', 'error'); return; }
+  let logoId = null;
+  const logoFile = document.getElementById('pj_logo')?.files[0];
+  if (logoFile) logoId = await uploadImage(logoFile, 'company_logo');
   const newJob = {
     id: Date.now(),
     title, company: State.user.name,
@@ -901,7 +1024,7 @@ function postJob() {
     region: document.getElementById('pj_region').value,
     salary: document.getElementById('pj_salary').value || 'Kompetitif',
     type: document.getElementById('pj_type').value,
-    desc, skills:['Komunikasi','Disiplin']
+    desc, skills: ['Komunikasi','Disiplin'], logoId
   };
   State.customJobs.push(newJob);
   State.save();
@@ -922,16 +1045,15 @@ function renderLamaran() {
           <button class="btn btn-ghost btn-sm" onclick="showToast('Status diubah ke Shortlist','success')">⭐ Shortlist</button>
         </div>
       </div>
-    `).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lamaran. Posting lowongan untuk mendapatkan pelamar.</p>'}
+    `).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lamaran.</p>'}
   `;
 }
 function renderVerifikasi() {
   document.getElementById('perusahaan-verifikasi').innerHTML = `
     <div class="card" style="margin-bottom:16px;">
       <h3 style="color:var(--blue-900);margin-bottom:12px;">✅ Beri Verifikasi Kinerja</h3>
-      <p style="color:var(--gray-600);font-size:14px;margin-bottom:16px;">Berikan centang biru dan ulasan untuk mantan karyawan Anda. Verifikasi ini tidak dapat dihapus sepihak (ada audit log).</p>
       <div class="form-group"><label>Nama Kandidat</label><input type="text" id="verif_name" placeholder="Nama lengkap kandidat"></div>
-      <div class="form-group"><label>Ulasan Kinerja</label><textarea id="verif_comment" placeholder="Contoh: Kinerja sangat baik, disiplin, dan cepat belajar." style="min-height:80px;"></textarea></div>
+      <div class="form-group"><label>Ulasan Kinerja</label><textarea id="verif_comment" placeholder="Contoh: Kinerja sangat baik, disiplin." style="min-height:80px;"></textarea></div>
       <button class="btn btn-primary" onclick="submitVerifikasi()">✅ Kirim Verifikasi</button>
     </div>
     <h3 class="section-title">Riwayat Verifikasi (${State.verifiedEmployees.length})</h3>
@@ -973,10 +1095,7 @@ function renderAdminOverview() {
   document.getElementById('admin-overview').innerHTML = `
     <div class="passport-header" style="background:linear-gradient(135deg,#dc2626,#b91c1c);">
       <div class="avatar">${escapeHtml(State.user.name.charAt(0).toUpperCase())}</div>
-      <div>
-        <h2>${escapeHtml(State.user.name)}</h2>
-        <p>Super Admin — Pemkot Tarakan</p>
-      </div>
+      <div><h2>${escapeHtml(State.user.name)}</h2><p>Super Admin — Pemkot Tarakan</p></div>
     </div>
     <div class="grid-4">
       <div class="stat-card"><div class="stat-icon">💼</div><div><strong>${totalJobs}</strong><span>Lowongan Aktif</span></div></div>
@@ -1011,14 +1130,14 @@ function renderBigData() {
     <div class="card">
       ${sectorCounts.map(s => `<div style="margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;"><strong>${s.sector}</strong><span>${s.count} lowongan</span></div>
-        <div style="height:12px;background:var(--gray-100);border-radius:6px;overflow:hidden;"><div style="height:100%;width:${(s.count/maxCount)*100}%;background:linear-gradient(90deg,#2563eb,#f59e0b);border-radius:6px;transition:width 0.5s;"></div></div>
+        <div style="height:12px;background:var(--gray-100);border-radius:6px;overflow:hidden;"><div style="height:100%;width:${(s.count/maxCount)*100}%;background:linear-gradient(90deg,#2563eb,#f59e0b);border-radius:6px;"></div></div>
       </div>`).join('')}
     </div>
     <h3 class="section-title">🗺️ Sebaran Wilayah</h3>
     <div class="card-grid">
       ${REGIONS.slice(1).map(r => {
         const count = State.allJobs().filter(j => j.region === r).length;
-        return `<div class="stat-card"><div class="stat-icon">📍</div><div><strong>${count}</strong><span>Lowongan di Tarakan ${r}</span></div></div>`;
+        return `<div class="stat-card"><div class="stat-icon">📍</div><div><strong>${count}</strong><span>Lowongan Tarakan ${r}</span></div></div>`;
       }).join('')}
     </div>
     <button class="btn btn-primary" style="margin-top:20px;" onclick="showToast('Laporan berhasil diexport! (simulasi)','success')">📥 Export Laporan Bulanan</button>
@@ -1062,15 +1181,14 @@ const INTERVIEW_QUESTIONS = [
 const INTERVIEW_FEEDBACK = [
   'Jawaban yang baik! Anda sudah menonjolkan motivasi. Tambahkan pencapaian terukur agar lebih kuat. Skor: 78/100.',
   'Bagus! Anda jujur menyebut kekurangan. Sertakan bagaimana Anda mengatasinya. Skor: 82/100.',
-  'Respons yang matang. Tunjukkan contoh konkret situasi yang pernah Anda hadapi. Skor: 75/100.',
+  'Respons yang matang. Tunjukkan contoh konkret situasi. Skor: 75/100.',
   'Visi yang jelas! Kaitkan dengan kontribusi untuk perusahaan. Skor: 85/100.'
 ];
-
 function toggleAIChat() {
   aiOpen = !aiOpen;
   document.getElementById('aiPanel').classList.toggle('show', aiOpen);
   if (aiOpen && !document.getElementById('aiMessages').children.length) {
-    addAIMessage('ai', 'Halo! 👋 Saya Mercusuar AI, asisten pintar TENGKAYU-LINK.\n\nSaya bisa membantu Anda dengan:\n📄 Review CV\n🎤 Simulasi Interview\n📋 Info Legalitas UMKM (NIB/Halal)\n💼 Pencarian Lowongan\n\nApa yang bisa saya bantu hari ini?');
+    addAIMessage('ai', 'Halo! 👋 Saya Mercusuar AI, asisten pintar TENGKAYU-LINK.\n\nSaya bisa membantu:\n📄 Review CV\n🎤 Simulasi Interview\n📋 Info Legalitas (NIB/Halal)\n💼 Pencarian Lowongan\n\nApa yang bisa saya bantu?');
   }
 }
 function quickPrompt(text) {
@@ -1083,10 +1201,7 @@ function sendAIMessage() {
   if (!text) return;
   addAIMessage('user', text);
   input.value = '';
-  setTimeout(() => {
-    const reply = getAIReply(text);
-    addAIMessage('ai', reply);
-  }, 600);
+  setTimeout(() => addAIMessage('ai', getAIReply(text)), 600);
 }
 function addAIMessage(role, text) {
   const box = document.getElementById('aiMessages');
@@ -1098,8 +1213,6 @@ function addAIMessage(role, text) {
 }
 function getAIReply(msg) {
   const m = msg.toLowerCase();
-
-  // Interview mode continuation
   if (interviewMode.active) {
     if (interviewMode.step < INTERVIEW_QUESTIONS.length) {
       const fb = INTERVIEW_FEEDBACK[interviewMode.step];
@@ -1108,55 +1221,43 @@ function getAIReply(msg) {
         return `${fb}\n\n❓ Pertanyaan ${interviewMode.step+1}: ${INTERVIEW_QUESTIONS[interviewMode.step]}`;
       } else {
         interviewMode.active = false;
-        return `${fb}\n\n🎉 Simulasi interview selesai!\nRata-rata skor Anda: 80/100. Pertahankan!\n\nTips: Latih lagi dengan pertanyaan berbeda untuk hasil lebih baik.`;
+        return `${fb}\n\n🎉 Simulasi interview selesai! Rata-rata skor: 80/100.`;
       }
     }
   }
-
   if (m.includes('interview') || m.includes('wawancara')) {
     interviewMode = { active:true, step:0 };
     return `Baik, mari mulai simulasi interview! 🎤\nSaya akan berperan sebagai HRD.\n\n❓ Pertanyaan 1: ${INTERVIEW_QUESTIONS[0]}`;
   }
   if (m.includes('cv') || m.includes('resume')) {
     const badgeCount = State.badges?.length || 0;
-    return `📄 Analisis CV Anda:\n\n✅ Kekuatan: Anda memiliki ${badgeCount} lencana keahlian terverifikasi.\n⚠️ Perbaikan: Tambahkan pencapaian terukur (mis. "meningkatkan penjualan 20%").\n💡 Saran: Sertakan portofolio proyek nyata di Paspor Karya.\n\nSkor CV: ${badgeCount > 0 ? '82' : '65'}/100. ${badgeCount === 0 ? 'Ambil kelas di Layar Mahir untuk tingkatkan skor!' : 'Terus tingkatkan!'}`;
+    return `📄 Analisis CV Anda:\n\n✅ Kekuatan: ${badgeCount} lencana keahlian terverifikasi.\n⚠️ Perbaikan: Tambahkan pencapaian terukur.\n💡 Saran: Sertakan portofolio di Paspor Karya.\n\nSkor CV: ${badgeCount > 0 ? '82' : '65'}/100.`;
   }
-  if (m.includes('halal')) return '☪️ Syarat Sertifikat Halal untuk produk sambal bandeng:\n1. NIB (Nomor Induk Berusaha) via OSS\n2. Daftar produk & bahan baku\n3. Proses produksi bebas kontaminasi\n4. Sertifikat halal dari MUI/BPJPH\n5. Label halal pada kemasan\n\n⏱️ Estimasi: 21-30 hari kerja.\n💰 Biaya: UMKM mikro bisa GRATIS (program SEHATI).\n\nBuka menu "Jaring Usaha" → "Klinik Legalitas" untuk panduan step-by-step.';
-  if (m.includes('nib')) return '📄 NIB (Nomor Induk Berusaha) dibuat GRATIS via OSS di oss.go.id.\n\nDokumen yang perlu:\n• NIK (KTP)\n• NPWP\n• Data usaha (nama, alamat, jenis)\n\n⏱️ Proses: 1-3 hari kerja.\n\nBuka "Jaring Usaha" → "Klinik Legalitas Terpadu" → pilih "NIB" untuk wizard interaktif.';
-  if (m.includes('modal') || m.includes('kur') || m.includes('hibah')) return '💰 Radar Permodalan TENGKAYU-LINK:\n\n• KUR Mikro: hingga Rp 50 juta (bunga 6%/tahun)\n• KUR Kecil: Rp 50-500 juta\n• Hibah UMKM: Rp 5-25 juta (kompetitif)\n\nSyarat umum: NIB, laporan keuangan sederhana, usaha berjalan ≥6 bulan.\n\nBuka "Jaring Usaha" → "Radar Permodalan" untuk mengajukan ke mitra bank (BRI/BPD).';
+  if (m.includes('halal')) return '☪️ Syarat Sertifikat Halal untuk sambal bandeng:\n1. NIB via OSS\n2. Daftar produk & bahan\n3. Proses bebas kontaminasi\n4. Sertifikat dari MUI/BPJPH\n5. Label halal pada kemasan\n\n⏱️ Estimasi: 21-30 hari.\n💰 UMKM mikro GRATIS (program SEHATI).\n\nBuka "Jaring Usaha" → "Klinik Legalitas".';
+  if (m.includes('nib')) return '📄 NIB dibuat GRATIS via OSS di oss.go.id.\n\nDokumen:\n• NIK (KTP)\n• NPWP\n• Data usaha\n\n⏱️ 1-3 hari kerja.\n\nBuka "Jaring Usaha" → "Klinik Legalitas Terpadu" → "NIB".';
+  if (m.includes('modal') || m.includes('kur') || m.includes('hibah')) return '💰 Radar Permodalan:\n\n• KUR Mikro: hingga Rp 50 jt (6%/th)\n• KUR Kecil: Rp 50-500 jt\n• Hibah UMKM: Rp 5-25 jt\n\nSyarat: NIB, laporan keuangan, usaha ≥6 bulan.\n\nBuka "Jaring Usaha" → "Radar Permodalan".';
   if (m.includes('kerja') || m.includes('loker') || m.includes('lowongan')) {
     const count = State.allJobs?.().length || 10;
-    return `💼 Ada ${count} lowongan aktif di TENGKAYU-LINK.\n\nTips pencarian:\n1. Buka menu "Dermaga Karir"\n2. Filter sektor: Perikanan, Jasa, UMKM, Pariwisata, Pertambangan\n3. Klik peta untuk filter wilayah Tarakan\n4. Aktifkan Radar Karir 🔔 untuk notifikasi otomatis\n\nSektor apa yang Anda minati?`;
+    return `💼 Ada ${count} lowongan aktif.\n\nTips:\n1. Buka "Dermaga Karir"\n2. Filter sektor & wilayah\n3. Aktifkan Radar Karir 🔔\n\nSektor apa yang Anda minati?`;
   }
-  if (m.includes('halo') || m.includes('hai') || m.includes('hi')) return 'Halo! 👋 Ada yang bisa saya bantu? Saya bisa review CV, simulasi interview, info legalitas UMKM, atau bantu cari lowongan.';
-  if (m.includes('terima kasih') || m.includes('thanks')) return 'Sama-sama! 😊 Semoga sukses karir dan usahanya. Ada lagi yang bisa saya bantu?';
-  return 'Maaf, saya belum memahami pertanyaan itu. 🤔\n\nSaya bisa membantu dengan topik:\n📄 CV / Resume\n🎤 Simulasi Interview\n📋 Legalitas (NIB/Halal)\n💰 Permodalan (KUR/Hibah)\n💼 Lowongan Kerja\n\nCoba tanyakan salah satunya ya!';
+  if (m.includes('halo') || m.includes('hai') || m.includes('hi')) return 'Halo! 👋 Ada yang bisa saya bantu? Saya bisa review CV, simulasi interview, info legalitas, atau bantu cari lowongan.';
+  if (m.includes('terima kasih') || m.includes('thanks')) return 'Sama-sama! 😊 Semoga sukses!';
+  return 'Maaf, saya belum paham. 🤔\n\nTopik yang saya kuasai:\n📄 CV\n🎤 Interview\n📋 Legalitas (NIB/Halal)\n💰 KUR/Hibah\n💼 Lowongan\n\nCoba tanyakan salah satunya ya!';
 }
 
 // ============ INIT ============
 document.addEventListener('DOMContentLoaded', () => {
   updateNotifDot();
-  // close modals on overlay click
   document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
   });
-  // close notif panel when clicking outside
   document.addEventListener('click', e => {
     const panel = document.getElementById('notifPanel');
     const bell = e.target.closest('.icon-btn');
-    if (panel.classList.contains('show') && !e.target.closest('#notifPanel') && !bell) {
+    if (panel?.classList.contains('show') && !e.target.closest('#notifPanel') && !bell) {
       panel.classList.remove('show');
     }
   });
-  // Auto-login if session exists
-  if (State.user) {
-    enterDashboard();
-  } else {
-    showPage('landing');
-  }
+  if (State.user) enterDashboard();
+  else showPage('landing');
 });
-
-// Expose functions globally (they already are, but ensure)
-window.showPage = showPage;
-window.openLogin = openLogin;
-// ... all functions are global by default in non-module scripts
