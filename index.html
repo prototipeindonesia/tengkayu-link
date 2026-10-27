@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TENGKAYU-LINK — Navigasi Masa Depan Karir & Usaha</title>
+<meta name="description" content="Ekosistem terintegrasi untuk pencari kerja, pengembangan keahlian vokasi, dan inkubasi UMKM lokal di Bumi Paguntaka.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo" onclick="showPage('landing');return false;">
+      <span class="logo-icon">⬢</span>
+      <span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#fitur" onclick="scrollToSection('fitur');return false;">Fitur</a>
+      <a href="#trust" onclick="scrollToSection('trust');return false;">Tentang</a>
+      <a href="#footer" onclick="scrollToSection('footer');return false;">Kontak</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" onclick="openLogin()">Masuk</button>
+      <button class="btn btn-primary" onclick="openLogin()">Daftar</button>
+    </div>
+    <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('show')">☰</button>
+  </div>
+</nav>
+
+<!-- LANDING -->
+<main id="page-landing" class="page active">
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <span class="badge-pill">🚀 Platform Lokal Tarakan</span>
+      <h1>Navigasi Masa Depan <span class="gradient-text">Karir & Usaha</span> di Bumi Paguntaka</h1>
+      <p>Ekosistem terintegrasi untuk pencari kerja, pengembangan keahlian vokasi, dan inkubasi UMKM lokal. <strong>Aman, Tervalidasi, dan Didukung oleh Kecerdasan Buatan.</strong></p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-lg" onclick="openLogin('yuwana')">Mulai Cari Kerja →</button>
+        <button class="btn btn-yellow btn-lg" onclick="openLogin('perusahaan')">Bangun Usaha Saya 🚀</button>
+      </div>
+      <div class="hero-stats">
+        <div><strong>150+</strong><span>Lowongan Aktif</span></div>
+        <div><strong>500+</strong><span>Yuwana Terdaftar</span></div>
+        <div><strong>80+</strong><span>UMKM Terbina</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floating-card card-1">💼 Dermaga Karir</div>
+      <div class="floating-card card-2">🎓 Layar Mahir</div>
+      <div class="floating-card card-3">🤖 Mercusuar AI</div>
+      <div class="floating-card card-4">🛍️ Jaring Usaha</div>
+    </div>
+  </section>
+
+  <section class="trust-bar" id="trust">
+    <div class="trust-inner">
+      <div class="trust-item"><span class="trust-icon">🔒</span><div><strong>100%</strong><span>Data Terenkripsi E2E</span></div></div>
+      <div class="trust-item"><span class="trust-icon">✅</span><div><strong>Tervalidasi</strong><span>KYC Perusahaan</span></div></div>
+      <div class="trust-item"><span class="trust-icon">🤖</span><div><strong>AI 24/7</strong><span>Mercusuar AI</span></div></div>
+      <div class="trust-item"><span class="trust-icon">🏛️</span><div><strong>Terhubung</strong><span>Pemkot Tarakan</span></div></div>
+    </div>
+  </section>
+
+  <section class="bento-section" id="fitur">
+    <div class="section-header">
+      <span class="badge-pill">5 Fitur Unggulan</span>
+      <h2>Ekosistem Lengkap untuk <span class="gradient-text">Karir & Usaha</span></h2>
+      <p>Satu platform, lima fitur utama yang saling terintegrasi.</p>
+    </div>
+    <div class="bento-grid">
+      <div class="bento-card bento-large" onclick="openLogin('yuwana')">
+        <div class="bento-icon">💼</div>
+        <h3>Dermaga Karir</h3>
+        <p>Portal lowongan kerja cerdas dengan peta geo-tagging Tarakan, filter sektor RPJMD, Lamar 1-Click, dan Radar Karir notifikasi lintas jurusan.</p>
+        <div class="bento-tags"><span>🗺️ Peta Lowongan</span><span>🔔 Radar Karir</span><span>⚡ 1-Click Apply</span></div>
+      </div>
+      <div class="bento-card" onclick="openLogin('yuwana')">
+        <div class="bento-icon">🎓</div>
+        <h3>Layar Mahir</h3>
+        <p>Akademi vokasi bersertifikat digital. Video micro-learning, webinar mentoring, dan E-Badge terverifikasi.</p>
+        <div class="bento-tags"><span>📹 Micro-Learning</span><span>🏅 E-Badge</span></div>
+      </div>
+      <div class="bento-card" onclick="openLogin('perusahaan')">
+        <div class="bento-icon">🛍️</div>
+        <h3>Jaring Usaha</h3>
+        <p>Inkubator UMKM. Klinik legalitas NIB & Halal, forum kemitraan, dan Radar Permodalan terhubung bank.</p>
+        <div class="bento-tags"><span>📋 Legalitas</span><span>💰 KUR</span></div>
+      </div>
+      <div class="bento-card" onclick="openLogin('yuwana')">
+        <div class="bento-icon">📜</div>
+        <h3>Paspor Karya</h3>
+        <p>CV digital tervalidasi. Auto-CV, portofolio grid, QR keahlian, dan verifikasi kinerja dari perusahaan.</p>
+        <div class="bento-tags"><span>📄 Auto-CV</span><span>🔳 QR Code</span></div>
+      </div>
+      <div class="bento-card bento-wide" onclick="toggleAIChat()">
+        <div class="bento-icon">🤖</div>
+        <h3>Mercusuar AI</h3>
+        <p>Asisten pintar 24/7. Review CV, simulasi interview, dan konsultan UMKM dalam satu chatbot.</p>
+        <div class="bento-tags"><span>💬 Chatbot</span><span>🎤 Interview</span><span>📊 CV Review</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2>Siap Memulai Perjalanan Anda?</h2>
+      <p>Bergabung dengan ribuan Yuwana dan UMKM di Tarakan.</p>
+      <button class="btn btn-yellow btn-lg" onclick="openLogin()">Daftar Sekarang — Gratis</button>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
+        <p style="margin-top:12px;color:#94a3b8;font-size:14px;">Tempat Pengembangan Karir, Yuwana, dan Usaha. Ekosistem terintegrasi untuk Bumi Paguntaka.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#fitur">Dermaga Karir</a>
+        <a href="#fitur">Layar Mahir</a>
+        <a href="#fitur">Jaring Usaha</a>
+        <a href="#fitur">Paspor Karya</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Keamanan Data</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kontak</h4>
+        <a href="#">📧 hello@tengkayu-link.id</a>
+        <a href="#">📱 +62 812-3456-7890</a>
+        <a href="#">📍 Tarakan, Kalimantan Utara</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 TENGKAYU-LINK. Dibuat dengan 💙💛 untuk Bumi Paguntaka.</p></div>
+  </footer>
+</main>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <div class="login-header">
+      <div class="logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
+      <h2>Selamat Datang</h2>
+      <p>Pilih peran Anda untuk masuk</p>
+    </div>
+    <div class="role-grid" id="roleGrid">
+      <button class="role-card" data-role="yuwana" onclick="selectRole('yuwana')">
+        <span class="role-icon">👤</span><strong>Pencari Kerja</strong><small>Yuwana / Pekerja</small>
+      </button>
+      <button class="role-card" data-role="perusahaan" onclick="selectRole('perusahaan')">
+        <span class="role-icon">🏢</span><strong>Perusahaan / UMKM</strong><small>Tier KYC</small>
+      </button>
+      <button class="role-card" data-role="admin" onclick="selectRole('admin')">
+        <span class="role-icon">🏛️</span><strong>Admin Pemkot</strong><small>Super Admin</small>
+      </button>
+    </div>
+    <div id="loginForm" style="display:none;">
+      <div class="form-group">
+        <label id="loginLabel">Nama Lengkap</label>
+        <input type="text" id="loginName" placeholder="Masukkan nama Anda" onkeypress="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="form-group" id="emailGroup" style="display:none;">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="nama@email.com">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="doLogin()">Masuk →</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="quickDemo()">🎯 Coba Mode Demo</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="backToRoles()">← Kembali</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD YUWANA -->
+<div id="page-yuwana" class="page dashboard-page">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
+    <div class="sidebar-user">
+      <div class="avatar" id="yuwanaAvatar">Y</div>
+      <div><strong id="yuwanaName">Yuwana</strong><small>Pencari Kerja</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="overview" onclick="showYuwanaTab('overview')">🏠 Overview</button>
+      <button class="nav-item" data-tab="dermaga" onclick="showYuwanaTab('dermaga')">💼 Dermaga Karir</button>
+      <button class="nav-item" data-tab="mahir" onclick="showYuwanaTab('mahir')">🎓 Layar Mahir</button>
+      <button class="nav-item" data-tab="usaha" onclick="showYuwanaTab('usaha')">🛍️ Jaring Usaha</button>
+      <button class="nav-item" data-tab="paspor" onclick="showYuwanaTab('paspor')">📜 Paspor Karya</button>
+    </nav>
+    <button class="btn btn-ghost btn-block logout-btn" onclick="doLogout()">🚪 Keluar</button>
+  </aside>
+  <main class="dashboard-main">
+    <header class="dash-header">
+      <h1 id="yuwanaTabTitle">Overview</h1>
+      <div class="dash-header-actions">
+        <button class="icon-btn" onclick="toggleNotifications()" title="Radar Karir">🔔<span class="notif-dot" id="notifDot"></span></button>
+        <button class="icon-btn" onclick="toggleAIChat()" title="Mercusuar AI">🤖</button>
+      </div>
+      <div id="notifPanel" class="notif-panel"></div>
+    </header>
+    <div class="dash-content">
+      <div id="yuwana-overview" class="tab-content active"></div>
+      <div id="yuwana-dermaga" class="tab-content"></div>
+      <div id="yuwana-mahir" class="tab-content"></div>
+      <div id="yuwana-usaha" class="tab-content"></div>
+      <div id="yuwana-paspor" class="tab-content"></div>
+    </div>
+  </main>
+</div>
+
+<!-- DASHBOARD PERUSAHAAN -->
+<div id="page-perusahaan" class="page dashboard-page">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
+    <div class="sidebar-user">
+      <div class="avatar" id="perusahaanAvatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">P</div>
+      <div><strong id="perusahaanName">Perusahaan</strong><small>Tier KYC</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="overview" onclick="showPerusahaanTab('overview')">🏠 Overview</button>
+      <button class="nav-item" data-tab="post" onclick="showPerusahaanTab('post')">📝 Post Lowongan</button>
+      <button class="nav-item" data-tab="lamaran" onclick="showPerusahaanTab('lamaran')">📥 Lamaran Masuk</button>
+      <button class="nav-item" data-tab="verifikasi" onclick="showPerusahaanTab('verifikasi')">✅ Verifikasi Kinerja</button>
+    </nav>
+    <button class="btn btn-ghost btn-block logout-btn" onclick="doLogout()">🚪 Keluar</button>
+  </aside>
+  <main class="dashboard-main">
+    <header class="dash-header">
+      <h1 id="perusahaanTabTitle">Overview</h1>
+      <div class="dash-header-actions"><button class="icon-btn" onclick="toggleAIChat()">🤖</button></div>
+    </header>
+    <div class="dash-content">
+      <div id="perusahaan-overview" class="tab-content active"></div>
+      <div id="perusahaan-post" class="tab-content"></div>
+      <div id="perusahaan-lamaran" class="tab-content"></div>
+      <div id="perusahaan-verifikasi" class="tab-content"></div>
+    </div>
+  </main>
+</div>
+
+<!-- DASHBOARD ADMIN -->
+<div id="page-admin" class="page dashboard-page">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
+    <div class="sidebar-user">
+      <div class="avatar" id="adminAvatar" style="background:linear-gradient(135deg,#dc2626,#b91c1c)">A</div>
+      <div><strong id="adminName">Admin</strong><small>Super Admin</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="overview" onclick="showAdminTab('overview')">📊 Overview</button>
+      <button class="nav-item" data-tab="bigdata" onclick="showAdminTab('bigdata')">📈 Big Data</button>
+      <button class="nav-item" data-tab="verifikasi" onclick="showAdminTab('verifikasi')">✅ Verifikasi Perusahaan</button>
+    </nav>
+    <button class="btn btn-ghost btn-block logout-btn" onclick="doLogout()">🚪 Keluar</button>
+  </aside>
+  <main class="dashboard-main">
+    <header class="dash-header">
+      <h1 id="adminTabTitle">Overview</h1>
+      <div class="dash-header-actions"><button class="icon-btn" onclick="toggleAIChat()">🤖</button></div>
+    </header>
+    <div class="dash-content">
+      <div id="admin-overview" class="tab-content active"></div>
+      <div id="admin-bigdata" class="tab-content"></div>
+      <div id="admin-verifikasi" class="tab-content"></div>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div id="courseModal" class="modal-overlay">
+  <div class="modal-box modal-lg">
+    <button class="modal-close" onclick="closeCourse()">×</button>
+    <div id="courseContent"></div>
+  </div>
+</div>
+
+<div id="badgeModal" class="modal-overlay">
+  <div class="modal-box modal-center">
+    <div id="badgeContent" style="text-align:center;"></div>
+  </div>
+</div>
+
+<div id="jobModal" class="modal-overlay">
+  <div class="modal-box modal-lg">
+    <button class="modal-close" onclick="closeJob()">×</button>
+    <div id="jobContent"></div>
+  </div>
+</div>
+
+<div id="cvModal" class="modal-overlay">
+  <div class="modal-box modal-lg">
+    <button class="modal-close" onclick="closeCV()">×</button>
+    <div id="cvContent"></div>
+  </div>
+</div>
+
+<!-- AI CHAT -->
+<div class="ai-chat">
+  <div id="aiPanel" class="ai-panel">
+    <div class="ai-header">
+      <div class="ai-header-left">
+        <div class="ai-avatar">🤖</div>
+        <div><strong>Mercusuar AI</strong><small>● Online — Asisten TENGKAYU-LINK</small></div>
+      </div>
+      <button class="modal-close" onclick="toggleAIChat()" style="position:static;font-size:20px;">×</button>
+    </div>
+    <div id="aiMessages" class="ai-messages"></div>
+    <div class="ai-quick">
+      <button onclick="quickPrompt('Review CV saya')">📄 Review CV</button>
+      <button onclick="quickPrompt('Mulai simulasi interview')">🎤 Interview</button>
+      <button onclick="quickPrompt('Syarat sertifikat halal')">📋 Info Halal</button>
+      <button onclick="quickPrompt('Cari lowongan kerja')">💼 Cari Kerja</button>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Tanya Mercusuar AI..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+      <button onclick="sendAIMessage()">➤</button>
+    </div>
+  </div>
+  <button id="aiToggle" class="ai-toggle" onclick="toggleAIChat()">🤖</button>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
