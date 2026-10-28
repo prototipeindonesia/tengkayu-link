@@ -1,5 +1,5 @@
 /* ==========================================================
-   TENGKAYU-LINK — Frontend Logic (Updated: Mobile + CRUD)
+   TENGKAYU-LINK — Frontend Logic (Updated: Logout Profile + Sync Avatar)
    ========================================================== */
 
 // ============ DUMMY DATA ============
@@ -76,7 +76,6 @@ const State = {
   load() {
     try {
       this.user = JSON.parse(localStorage.getItem('tl_user') || 'null');
-      // MIGRASI ID: pastikan semua punya ID unik
       this.applications = (JSON.parse(localStorage.getItem('tl_apps') || '[]'))
         .map((a, i) => ({ ...a, id: a.id || (Date.now() + i) }));
       this.badges = JSON.parse(localStorage.getItem('tl_badges') || '[]');
@@ -129,7 +128,6 @@ function showPage(name) {
   const navbar = document.getElementById('navbar');
   if (navbar) navbar.style.display = (name === 'landing') ? '' : 'none';
   updateBottomNav(name);
-  // Tutup sidebar mobile jika terbuka
   document.querySelector('.sidebar.open')?.classList.remove('open');
   document.getElementById('sidebarOverlay')?.classList.remove('show');
 }
@@ -204,7 +202,24 @@ function enterDashboard() {
     showAdminTab('overview');
   }
   updateNotifDot();
+  // Sync avatar (jika user pernah upload foto profil)
+  setTimeout(syncSidebarAvatar, 100);
 }
+
+// ============ SYNC AVATAR SIDEBAR ============
+async function syncSidebarAvatar() {
+  if (!State.user?.avatarId) return;
+  try {
+    const url = await getStoredFileUrl(State.user.avatarId);
+    if (!url) return;
+    const map = { yuwana: 'yuwanaAvatar', perusahaan: 'perusahaanAvatar', admin: 'adminAvatar' };
+    const el = document.getElementById(map[State.user.role]);
+    if (el) {
+      el.innerHTML = `<img src="${url}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
+    }
+  } catch(e) { console.warn('Avatar sync error', e); }
+}
+
 function doLogout() {
   if (!confirm('Keluar dari akun?')) return;
   State.user = null;
@@ -371,7 +386,9 @@ function editYuwanaProfile() {
     State.user.bio = data.bio;
     State.save();
     document.getElementById('yuwanaName').textContent = data.name;
-    document.getElementById('yuwanaAvatar').textContent = data.name.charAt(0).toUpperCase();
+    if (!State.user.avatarId) {
+      document.getElementById('yuwanaAvatar').textContent = data.name.charAt(0).toUpperCase();
+    }
     if (document.getElementById('yuwana-overview').classList.contains('active')) renderYuwanaOverview();
     if (document.getElementById('yuwana-paspor').classList.contains('active')) renderPaspor();
     showToast('Profil berhasil diperbarui! ✅', 'success');
@@ -989,6 +1006,15 @@ async function renderPaspor() {
         </div>
       </div>`).join('')}
     ` : ''}
+
+    <!-- ===== LOGOUT SECTION (NEW) ===== -->
+    <div class="logout-section">
+      <div>
+        <h4>🚪 Keluar dari Akun</h4>
+        <p>Anda akan keluar dari TENGKAYU-LINK. Data Anda tetap tersimpan.</p>
+      </div>
+      <button class="logout-profile-btn" onclick="doLogout()">Keluar Sekarang</button>
+    </div>
   `;
 
   if (State.user.avatarId) {
@@ -1078,6 +1104,7 @@ function openAvatarUpload() {
     State.user.avatarId = dbId;
     State.save();
     renderPaspor();
+    syncSidebarAvatar();
     showToast('Foto profil diperbarui!', 'success');
   };
   input.click();
@@ -1184,6 +1211,15 @@ function renderPerusahaanOverview() {
         </div>
       </div>
     `).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lowongan. Klik "Post Lowongan" untuk mulai.</p>'}
+
+    <!-- ===== LOGOUT SECTION (NEW) ===== -->
+    <div class="logout-section">
+      <div>
+        <h4>🚪 Keluar dari Akun</h4>
+        <p>Anda akan keluar dari akun perusahaan. Lowongan dan lamaran tetap tersimpan.</p>
+      </div>
+      <button class="logout-profile-btn" onclick="doLogout()">Keluar Sekarang</button>
+    </div>
   `;
 }
 function renderPostJob() {
@@ -1368,7 +1404,9 @@ function editPerusahaanProfile() {
     Object.assign(State.user, data);
     State.save();
     document.getElementById('perusahaanName').textContent = data.name;
-    document.getElementById('perusahaanAvatar').textContent = data.name.charAt(0).toUpperCase();
+    if (!State.user.avatarId) {
+      document.getElementById('perusahaanAvatar').textContent = data.name.charAt(0).toUpperCase();
+    }
     renderPerusahaanOverview();
     showToast('Profil perusahaan diperbarui! ✅', 'success');
   });
