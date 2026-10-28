@@ -369,11 +369,29 @@ img { height: auto; }
 .bottom-nav button span { font-size: 20px; line-height: 1; display: block; }
 .bottom-nav button.active { color: var(--blue-600); background: var(--blue-50); }
 
+/* Logout button di header mobile (opsional) */
+.mobile-logout-btn {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gray-200);
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #dc2626;
+  transition: all 0.2s;
+}
+.mobile-logout-btn:hover { border-color: #dc2626; background: #fef2f2; }
+
 /* ===== DESKTOP: HIDE MOBILE-ONLY ELEMENTS ===== */
 @media (min-width: 901px) {
   .bottom-nav,
   .sidebar-toggle,
-  .sidebar-overlay { display: none !important; }
+  .sidebar-overlay,
+  .mobile-logout-btn { display: none !important; }
   .ai-chat { bottom: 24px; right: 24px; }
 }
 
@@ -632,17 +650,50 @@ img { height: auto; }
   }
   .nav-toggle { display: block; }
 
-  /* --- Sidebar --- */
+  /* --- Sidebar: FIX logout selalu terlihat --- */
   .sidebar-toggle { display: flex; }
+  .mobile-logout-btn { display: flex; }
+
   .sidebar {
-    position: fixed; left: -300px; top: 0; bottom: 0;
-    width: 280px; z-index: 200;
-    transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
-    min-height: 100vh; overflow-y: auto;
     position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -300px;
+    width: 280px;
     height: 100vh;
+    max-height: 100vh;
+    z-index: 200;
+    transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
   .sidebar.open { left: 0; }
+
+  /* Logo & user card tidak boleh shrink */
+  .sidebar-logo,
+  .sidebar-user {
+    flex-shrink: 0;
+  }
+
+  /* Hanya nav yang scroll — bukan seluruh sidebar */
+  .sidebar-nav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 2px;
+  }
+
+  /* Logout SELALU terlihat di bawah */
+  .logout-btn {
+    flex-shrink: 0;
+    margin-top: auto;
+  }
 
   /* --- Dashboard main --- */
   .dashboard-main { width: 100%; min-width: 0; margin-left: 0; }
