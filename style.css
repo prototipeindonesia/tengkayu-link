@@ -35,16 +35,17 @@ body {
 
 /* Prevent media overflow */
 img, video, iframe { max-width: 100%; }
-img { height: auto; }
+img { height: auto; display: block; }
 
-/* Prevent text overflow */
+/* Prevent text overflow globally */
 .notif-item strong, .forum-post p, .job-card h4, .card h4,
 .stat-card div strong, .post-header strong, .msg,
 .passport-header h2, .passport-header p, .dash-header h1,
-.section-title, .job-card .company, .card p {
+.section-title, .job-card .company, .card p, .course-info h4,
+.quiz-question h4, .quiz-option, .btn {
   overflow-wrap: break-word;
   word-wrap: break-word;
-  hyphens: auto;
+  word-break: break-word;
 }
 
 /* ===== NAVBAR ===== */
@@ -71,6 +72,8 @@ img { height: auto; }
   padding: 10px 20px; border-radius: var(--radius-full); border: none;
   font-family: inherit; font-weight: 600; font-size: 14px; cursor: pointer;
   transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  max-width: 100%;
+  justify-content: center;
 }
 .btn-primary { background: var(--gradient-blue); color: white; box-shadow: var(--shadow-blue); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(37,99,235,0.35); }
@@ -137,7 +140,7 @@ img { height: auto; }
   max-width: 1200px; margin: 0 auto; display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;
 }
-.trust-item { display: flex; align-items: center; gap: 12px; color: white; }
+.trust-item { display: flex; align-items: center; gap: 12px; color: white; min-width: 0; }
 .trust-icon { font-size: 32px; flex-shrink: 0; }
 .trust-item div { display: flex; flex-direction: column; min-width: 0; }
 .trust-item strong { font-size: 20px; font-weight: 800; }
@@ -156,6 +159,7 @@ img { height: auto; }
   background: white; border-radius: var(--radius-lg); padding: 24px;
   box-shadow: var(--shadow-sm); border: 1.5px solid var(--gray-100);
   cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; gap: 10px;
+  min-width: 0;
 }
 .bento-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--blue-400); }
 .bento-large { grid-row: span 2; grid-column: span 1; }
@@ -254,10 +258,20 @@ img { height: auto; }
   background: rgba(255,255,255,0.05); border-radius: var(--radius-md);
 }
 .avatar {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--gradient-blue); display: flex; align-items: center;
-  justify-content: center; font-weight: 800; font-size: 18px; color: white;
-  flex-shrink: 0; overflow: hidden;
+  width: 42px; height: 42px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--gradient-blue);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 18px; color: white;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 .sidebar-user div { display: flex; flex-direction: column; min-width: 0; }
 .sidebar-user strong { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -295,7 +309,7 @@ img { height: auto; }
 }
 .notif-dot.show { display: block; }
 .dash-content { padding: 28px 32px; flex: 1; min-width: 0; }
-.tab-content { display: none; }
+.tab-content { display: none; min-width: 0; }
 .tab-content.active { display: block; animation: fadeIn 0.3s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -369,7 +383,6 @@ img { height: auto; }
 .bottom-nav button span { font-size: 20px; line-height: 1; display: block; }
 .bottom-nav button.active { color: var(--blue-600); background: var(--blue-50); }
 
-/* Logout button di header mobile (opsional) */
 .mobile-logout-btn {
   display: none;
   width: 36px; height: 36px;
@@ -508,13 +521,18 @@ img { height: auto; }
 /* Badge */
 .badge-display {
   width: 140px; height: 140px; border-radius: 50%;
+  aspect-ratio: 1 / 1;
   background: var(--gradient-yellow); margin: 0 auto 20px;
   display: flex; align-items: center; justify-content: center;
   font-size: 70px; box-shadow: 0 12px 40px rgba(251,191,36,0.5);
   animation: badgePop 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);
 }
 @keyframes badgePop { 0% { transform: scale(0) rotate(-180deg); } 100% { transform: scale(1) rotate(0); } }
-.badge-display.small { width: 60px; height: 60px; font-size: 28px; animation: none; }
+.badge-display.small {
+  width: 60px; height: 60px; font-size: 28px;
+  aspect-ratio: 1 / 1;
+  animation: none;
+}
 
 /* ===== FORUM ===== */
 .forum-post {
@@ -532,33 +550,73 @@ img { height: auto; }
 /* ===== PASSPORT ===== */
 .passport-header {
   background: var(--gradient-blue); color: white; border-radius: var(--radius-lg);
-  padding: 28px; display: flex; gap: 24px; align-items: center; margin-bottom: 24px;
+  padding: 28px;
+  display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  min-width: 0;
 }
 .passport-header .avatar {
   width: 80px; height: 80px; font-size: 32px;
-  background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.4);
+  aspect-ratio: 1 / 1;
+  background: rgba(255,255,255,0.2);
+  border: 3px solid rgba(255,255,255,0.4);
   flex-shrink: 0;
 }
-.passport-header > div { min-width: 0; flex: 1; }
+.passport-header > div:not(.avatar):not(.passport-qr) {
+  min-width: 0;
+  flex: 1 1 200px;
+}
 .passport-header h2 { font-size: 24px; margin-bottom: 4px; }
 .passport-header p { opacity: 0.9; font-size: 14px; }
 .passport-qr {
-  margin-left: auto; background: white; padding: 8px; border-radius: var(--radius-md);
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin-left: auto;
+  background: white;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   flex-shrink: 0;
 }
 .passport-qr img { width: 110px; height: 110px; display: block; }
-.passport-qr small { font-size: 9px; color: var(--gray-600); font-weight: 600; }
+.passport-qr small { font-size: 9px; color: var(--gray-600); font-weight: 600; text-align: center; }
 
+/* Button di passport header */
+.passport-header > .btn,
+.passport-header > button {
+  flex-shrink: 0;
+  margin-left: auto;
+  white-space: normal;
+  text-align: center;
+}
+
+/* Portfolio grid */
 .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .portfolio-item {
-  aspect-ratio: 1; background: var(--gradient-blue); border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: center; font-size: 32px;
-  cursor: pointer; transition: transform 0.2s; position: relative; overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: var(--gradient-blue);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
 }
 .portfolio-item:hover { transform: scale(1.03); }
-.portfolio-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.portfolio-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
 
 /* ===== AI CHAT ===== */
 .ai-chat { position: fixed; bottom: 24px; right: 24px; z-index: 500; }
@@ -588,6 +646,7 @@ img { height: auto; }
 .ai-header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .ai-avatar {
   width: 38px; height: 38px; border-radius: 50%; background: var(--yellow-400);
+  aspect-ratio: 1 / 1;
   display: flex; align-items: center; justify-content: center; font-size: 20px;
   flex-shrink: 0;
 }
@@ -602,6 +661,7 @@ img { height: auto; }
   padding: 6px 12px; border: 1px solid var(--gray-200); background: white;
   border-radius: var(--radius-full); font-size: 11px; cursor: pointer;
   font-family: inherit; transition: all 0.2s;
+  max-width: 100%;
 }
 .ai-quick button:hover { border-color: var(--blue-500); color: var(--blue-600); }
 .ai-input { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--gray-100); }
@@ -650,7 +710,7 @@ img { height: auto; }
   }
   .nav-toggle { display: block; }
 
-  /* --- Sidebar: FIX logout selalu terlihat --- */
+  /* --- Sidebar: logout selalu terlihat --- */
   .sidebar-toggle { display: flex; }
   .mobile-logout-btn { display: flex; }
 
@@ -672,13 +732,9 @@ img { height: auto; }
   }
   .sidebar.open { left: 0; }
 
-  /* Logo & user card tidak boleh shrink */
   .sidebar-logo,
-  .sidebar-user {
-    flex-shrink: 0;
-  }
+  .sidebar-user { flex-shrink: 0; }
 
-  /* Hanya nav yang scroll — bukan seluruh sidebar */
   .sidebar-nav {
     flex: 1;
     min-height: 0;
@@ -689,7 +745,6 @@ img { height: auto; }
     padding-right: 2px;
   }
 
-  /* Logout SELALU terlihat di bawah */
   .logout-btn {
     flex-shrink: 0;
     margin-top: auto;
@@ -713,7 +768,6 @@ img { height: auto; }
   }
   .tab-content { overflow-x: hidden; }
 
-  /* --- Notif panel --- */
   .notif-panel {
     right: 12px; left: 12px; width: auto;
     top: 60px; max-height: 60vh;
@@ -759,13 +813,24 @@ img { height: auto; }
   .card { padding: 14px; }
   .section-title { font-size: 15px; margin: 16px 0 10px; }
 
-  /* --- Passport header --- */
-  .passport-header { padding: 16px; gap: 12px; }
-  .passport-header .avatar { width: 56px; height: 56px; font-size: 22px; }
+  /* --- Passport header: flex-wrap & QR tetap rapi --- */
+  .passport-header {
+    padding: 16px;
+    gap: 12px;
+    align-items: center;
+  }
+  .passport-header .avatar {
+    width: 56px; height: 56px; font-size: 22px;
+    aspect-ratio: 1 / 1;
+  }
+  .passport-header > div:not(.avatar):not(.passport-qr) {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
   .passport-header h2 { font-size: 18px; }
   .passport-header p { font-size: 12px; }
-  .passport-qr { margin-left: auto; padding: 6px; }
-  .passport-qr img { width: 70px; height: 70px; }
+  .passport-qr { padding: 6px; }
+  .passport-qr img { width: 64px; height: 64px; }
   .passport-qr small { font-size: 8px; }
 
   /* --- Portfolio --- */
@@ -775,7 +840,7 @@ img { height: auto; }
   .map-svg { min-height: 160px; }
   .map-legend { font-size: 11px; gap: 10px; }
 
-  /* --- Form elements: prevent iOS zoom --- */
+  /* --- Form: prevent iOS zoom --- */
   .form-group input, .form-group select, .form-group textarea,
   select, input, textarea { font-size: 16px !important; }
   .btn { font-size: 13px; padding: 9px 16px; }
@@ -793,7 +858,7 @@ img { height: auto; }
   .modal-box.modal-lg { padding: 16px; }
   .modal-close { top: 12px; right: 12px; font-size: 24px; }
 
-  /* --- AI CHAT: reposition above bottom nav --- */
+  /* --- AI Chat: di atas bottom nav --- */
   .ai-chat {
     bottom: calc(86px + env(safe-area-inset-bottom));
     right: 14px;
@@ -810,7 +875,7 @@ img { height: auto; }
     max-height: calc(100vh - 220px);
   }
 
-  /* --- Toast: above AI toggle --- */
+  /* --- Toast di atas AI --- */
   .toast {
     bottom: calc(150px + env(safe-area-inset-bottom));
     font-size: 13px;
@@ -823,15 +888,49 @@ img { height: auto; }
   .footer-col h4 { font-size: 13px; }
   .footer-col a { font-size: 13px; }
 
-  /* --- CTA box --- */
+  /* --- CTA --- */
   .cta-section { padding: 20px 16px 40px; }
   .cta-box { padding: 32px 20px; }
   .cta-box h2 { font-size: 20px; }
   .cta-box p { font-size: 13px; }
 
-  /* --- Login role grid --- */
+  /* --- Login --- */
   .role-grid { grid-template-columns: 1fr; }
   .role-card { padding: 16px 12px; }
+}
+
+@media (max-width: 600px) {
+  /* --- Passport header: stack vertikal --- */
+  .passport-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    gap: 12px;
+  }
+  .passport-header .avatar {
+    align-self: flex-start;
+    width: 64px;
+    height: 64px;
+    aspect-ratio: 1 / 1;
+    font-size: 24px;
+  }
+  .passport-header > div:not(.avatar):not(.passport-qr) {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+  }
+  .passport-header .passport-qr {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+  .passport-header > .btn,
+  .passport-header > button {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  /* Buttons action row: full width */
+  .tab-content .btn { width: 100%; }
 }
 
 @media (max-width: 480px) {
@@ -843,6 +942,6 @@ img { height: auto; }
   .hero-stats { flex-wrap: wrap; }
   .hero-stats > div { min-width: 45%; }
   .ai-panel { height: 70vh; max-height: calc(100vh - 200px); }
-  .passport-qr img { width: 64px; height: 64px; }
-  .passport-header .avatar { width: 48px; height: 48px; font-size: 20px; }
+  .passport-qr img { width: 56px; height: 56px; }
+  .passport-header .avatar { width: 56px; height: 56px; font-size: 22px; }
 }
