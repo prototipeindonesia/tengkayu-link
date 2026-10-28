@@ -1,5 +1,5 @@
 /* ==========================================================
-   TENGKAYU-LINK — Frontend Logic (Updated with File Support)
+   TENGKAYU-LINK — Frontend Logic (Updated: Mobile + CRUD)
    ========================================================== */
 
 // ============ DUMMY DATA ============
@@ -19,9 +19,6 @@ const DUMMY_JOBS = [
 const SECTORS = ['Semua Sektor','Perikanan/Kelautan','Jasa & Perdagangan','UMKM/Kriya','Pariwisata/Perhotelan','Pertambangan'];
 const REGIONS = ['Semua Wilayah','Barat','Tengah','Timur','Utara'];
 
-/* ==========================================================
-   ⚠️ PENTING: Ganti videoUrl dengan link YouTube / GDrive Anda
-   ========================================================== */
 const COURSES = [
   { id:'c1', title:'Teknik Barista Dasar', duration:8, level:'Dasar', badge:'Lencana Dasar Barista', icon:'☕',
     videoUrl: 'https://www.youtube.com/watch?v=UjK0PMkyS28',
@@ -79,10 +76,13 @@ const State = {
   load() {
     try {
       this.user = JSON.parse(localStorage.getItem('tl_user') || 'null');
-      this.applications = JSON.parse(localStorage.getItem('tl_apps') || '[]');
+      // MIGRASI ID: pastikan semua punya ID unik
+      this.applications = (JSON.parse(localStorage.getItem('tl_apps') || '[]'))
+        .map((a, i) => ({ ...a, id: a.id || (Date.now() + i) }));
       this.badges = JSON.parse(localStorage.getItem('tl_badges') || '[]');
       this.portfolio = JSON.parse(localStorage.getItem('tl_portfolio') || '[]');
-      this.posts = JSON.parse(localStorage.getItem('tl_posts') || '[]');
+      this.posts = (JSON.parse(localStorage.getItem('tl_posts') || '[]'))
+        .map((p, i) => ({ ...p, id: p.id || (Date.now() + i) }));
       this.notifications = JSON.parse(localStorage.getItem('tl_notifs') || '[]');
       this.customJobs = JSON.parse(localStorage.getItem('tl_jobs') || '[]');
       this.companies = JSON.parse(localStorage.getItem('tl_companies') || 'null') || COMPANIES_KYC.map(c => ({...c}));
@@ -109,6 +109,7 @@ State.load();
 // ============ UTILS ============
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.className = 'toast show ' + type;
   clearTimeout(t._timeout);
@@ -125,7 +126,12 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('page-' + name);
   if (page) { page.classList.add('active'); window.scrollTo(0,0); }
-  document.getElementById('navbar').style.display = (name === 'landing') ? '' : 'none';
+  const navbar = document.getElementById('navbar');
+  if (navbar) navbar.style.display = (name === 'landing') ? '' : 'none';
+  updateBottomNav(name);
+  // Tutup sidebar mobile jika terbuka
+  document.querySelector('.sidebar.open')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('show');
 }
 
 // ============ NAV SCROLL ============
@@ -203,9 +209,88 @@ function doLogout() {
   if (!confirm('Keluar dari akun?')) return;
   State.user = null;
   State.save();
-  document.getElementById('navbar').style.display = '';
+  const navbar = document.getElementById('navbar');
+  if (navbar) navbar.style.display = '';
   showPage('landing');
   showToast('Anda telah keluar.', 'yellow');
+}
+
+// ============ MOBILE: SIDEBAR TOGGLE ============
+function toggleSidebar() {
+  const sidebar = document.querySelector('.dashboard-page.active .sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar) return;
+  sidebar.classList.toggle('open');
+  overlay?.classList.toggle('show', sidebar.classList.contains('open'));
+}
+
+// ============ MOBILE: BOTTOM NAVIGATION ============
+function updateBottomNav(page) {
+  const nav = document.getElementById('bottomNav');
+  if (!nav) return;
+  if (!page || page === 'landing') {
+    nav.classList.remove('show');
+    nav.innerHTML = '';
+    return;
+  }
+  const menus = {
+    yuwana: [
+      { tab:'overview', icon:'🏠', label:'Beranda', action:"showYuwanaTab('overview')" },
+      { tab:'dermaga', icon:'💼', label:'Karir', action:"showYuwanaTab('dermaga')" },
+      { tab:'mahir', icon:'🎓', label:'Kelas', action:"showYuwanaTab('mahir')" },
+      { tab:'usaha', icon:'🛍️', label:'Usaha', action:"showYuwanaTab('usaha')" },
+      { tab:'paspor', icon:'📜', label:'Profil', action:"showYuwanaTab('paspor')" }
+    ],
+    perusahaan: [
+      { tab:'overview', icon:'🏠', label:'Beranda', action:"showPerusahaanTab('overview')" },
+      { tab:'post', icon:'📝', label:'Post', action:"showPerusahaanTab('post')" },
+      { tab:'lamaran', icon:'📥', label:'Lamaran', action:"showPerusahaanTab('lamaran')" },
+      { tab:'verifikasi', icon:'✅', label:'Verifikasi', action:"showPerusahaanTab('verifikasi')" }
+    ],
+    admin: [
+      { tab:'overview', icon:'📊', label:'Beranda', action:"showAdminTab('overview')" },
+      { tab:'bigdata', icon:'📈', label:'Data', action:"showAdminTab('bigdata')" },
+      { tab:'verifikasi', icon:'✅', label:'Verifikasi', action:"showAdminTab('verifikasi')" }
+    ]
+  };
+  const items = menus[page] || [];
+  nav.innerHTML = items.map(item =>
+    `<button data-tab="${item.tab}" onclick="${item.action}">
+      <span>${item.icon}</span>${item.label}
+    </button>`
+  ).join('');
+  nav.classList.add('show');
+}
+function setBottomNavActive(tab) {
+  document.querySelectorAll('#bottomNav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab === tab)
+  );
+}
+
+// ============ GENERIC EDIT MODAL ============
+function openEditModal(title, fields, onSave) {
+  const modal = document.getElementById('editModal');
+  if (!modal) { showToast('Modal edit tidak ditemukan', 'error'); return; }
+  modal.querySelector('.edit-title').textContent = title;
+  modal.querySelector('.edit-body').innerHTML = fields.map(f => {
+    const val = (f.value || '').toString().replace(/"/g, '&quot;');
+    const inputHTML = f.type === 'textarea'
+      ? `<textarea id="edit_${f.name}" placeholder="${f.placeholder||''}" style="min-height:90px;">${f.value||''}</textarea>`
+      : f.type === 'select'
+        ? `<select id="edit_${f.name}">${(f.options||[]).map(o => `<option ${o===f.value?'selected':''}>${o}</option>`).join('')}</select>`
+        : `<input type="${f.type||'text'}" id="edit_${f.name}" value="${val}" placeholder="${f.placeholder||''}">`;
+    return `<div class="form-group"><label>${f.label}</label>${inputHTML}</div>`;
+  }).join('');
+  modal.querySelector('.edit-save').onclick = () => {
+    const data = {};
+    fields.forEach(f => data[f.name] = document.getElementById(`edit_${f.name}`).value.trim());
+    if (onSave(data) !== false) closeEditModal();
+  };
+  modal.classList.add('active');
+  setTimeout(() => modal.querySelector('.edit-body input, .edit-body textarea, .edit-body select')?.focus(), 100);
+}
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('active');
 }
 
 // ============ YUWANA DASHBOARD ============
@@ -221,6 +306,9 @@ function showYuwanaTab(tab) {
   if (tab === 'mahir') renderMahir();
   if (tab === 'usaha') renderUsaha();
   if (tab === 'paspor') renderPaspor();
+  setBottomNavActive(tab);
+  document.querySelector('.sidebar.open')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('show');
 }
 
 function renderYuwanaOverview() {
@@ -233,34 +321,83 @@ function renderYuwanaOverview() {
   document.getElementById('yuwana-overview').innerHTML = `
     <div class="passport-header">
       <div class="avatar">${escapeHtml(State.user.name.charAt(0).toUpperCase())}</div>
-      <div>
+      <div style="flex:1;min-width:180px;">
         <h2>Halo, ${escapeHtml(State.user.name.split(' ')[0])}! 👋</h2>
         <p>Selamat datang kembali di TENGKAYU-LINK. Mari bangun masa depanmu!</p>
       </div>
+      <button class="btn btn-yellow btn-sm" onclick="editYuwanaProfile()" style="align-self:center;">✏️ Edit Profil</button>
     </div>
     <div class="grid-4">
-      <div class="stat-card"><div class="stat-icon">🏅</div><div><strong>${badges}</strong><span>Lencana Diperoleh</span></div></div>
-      <div class="stat-card"><div class="stat-icon">📥</div><div><strong>${apps}</strong><span>Lamaran Terkirim</span></div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div><strong>${badges}</strong><span>Lencana</span></div></div>
+      <div class="stat-card"><div class="stat-icon">📥</div><div><strong>${apps}</strong><span>Lamaran</span></div></div>
       <div class="stat-card"><div class="stat-icon">🎓</div><div><strong>${courses}</strong><span>Kelas Selesai</span></div></div>
-      <div class="stat-card"><div class="stat-icon">🔔</div><div><strong>${State.notifications.length}</strong><span>Notifikasi Radar</span></div></div>
+      <div class="stat-card"><div class="stat-icon">🔔</div><div><strong>${State.notifications.length}</strong><span>Notifikasi</span></div></div>
     </div>
     <h3 class="section-title">💼 Rekomendasi Lowongan</h3>
     <div class="card-grid">${jobs.map(jobCardHTML).join('')}</div>
     <h3 class="section-title">🎓 Rekomendasi Kelas</h3>
     <div class="card-grid">${recs.map(courseCardHTML).join('') || '<p style="color:var(--gray-500)">Semua kelas sudah diselesaikan! 🎉</p>'}</div>
     ${State.applications.length ? `
-      <h3 class="section-title">📋 Status Lamaran Terakhir</h3>
+      <h3 class="section-title">📋 Status Lamaran Saya</h3>
       <div class="card">
-        ${State.applications.slice(-5).reverse().map(a => {
+        ${State.applications.slice().reverse().map(a => {
           const job = State.allJobs().find(j => j.id === a.jobId);
-          return `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
-            <div><strong>${escapeHtml(job?.title || 'Lowongan')}</strong><br><small style="color:var(--gray-500)">${escapeHtml(job?.company || '')}</small></div>
-            <span class="job-tag green">${a.status}</span>
+          return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--gray-100);flex-wrap:wrap;">
+            <div style="flex:1;min-width:160px;">
+              <strong style="font-size:14px;">${escapeHtml(job?.title || a.title || 'Lowongan')}</strong><br>
+              <small style="color:var(--gray-500);">${escapeHtml(job?.company || a.company || '')}</small>
+            </div>
+            <span class="job-tag ${a.status==='Diterima'?'green':a.status==='Ditolak'?'':'yellow'}">${escapeHtml(a.status)}</span>
+            <button class="btn btn-ghost btn-sm" onclick="withdrawApplication(${a.id})" style="color:#dc2626;padding:4px 10px;font-size:11px;">Tarik</button>
           </div>`;
         }).join('')}
       </div>
     ` : ''}
   `;
+}
+
+// ============ CRUD YUWANA ============
+function editYuwanaProfile() {
+  openEditModal('✏️ Edit Profil', [
+    { name:'name', label:'Nama Lengkap', value: State.user.name, placeholder:'Nama Anda' },
+    { name:'email', label:'Email', type:'email', value: State.user.email || '', placeholder:'nama@email.com' },
+    { name:'phone', label:'No. WhatsApp', type:'tel', value: State.user.phone || '', placeholder:'08xx-xxxx-xxxx' },
+    { name:'bio', label:'Bio Singkat', type:'textarea', value: State.user.bio || '', placeholder:'Ceritakan tentang Anda...' }
+  ], (data) => {
+    if (!data.name) { showToast('Nama wajib diisi!', 'error'); return false; }
+    State.user.name = data.name;
+    State.user.email = data.email;
+    State.user.phone = data.phone;
+    State.user.bio = data.bio;
+    State.save();
+    document.getElementById('yuwanaName').textContent = data.name;
+    document.getElementById('yuwanaAvatar').textContent = data.name.charAt(0).toUpperCase();
+    if (document.getElementById('yuwana-overview').classList.contains('active')) renderYuwanaOverview();
+    if (document.getElementById('yuwana-paspor').classList.contains('active')) renderPaspor();
+    showToast('Profil berhasil diperbarui! ✅', 'success');
+  });
+}
+function withdrawApplication(appId) {
+  if (!confirm('Tarik lamaran ini? Tindakan tidak bisa dibatalkan.')) return;
+  State.applications = State.applications.filter(a => a.id !== appId);
+  State.save();
+  renderYuwanaOverview();
+  showToast('Lamaran berhasil ditarik.', 'yellow');
+}
+function editPortfolio(dbId) {
+  const item = State.portfolio.find(p => p.dbId === dbId);
+  if (!item) return;
+  openEditModal('✏️ Edit Portofolio', [
+    { name:'title', label:'Judul Karya', value: item.title, placeholder:'Judul' }
+  ], (data) => {
+    if (!data.title) { showToast('Judul wajib!', 'error'); return false; }
+    item.title = data.title;
+    item.editedAt = new Date().toISOString();
+    State.save();
+    closeFileView();
+    renderPaspor();
+    showToast('Portofolio diperbarui! ✅', 'success');
+  });
 }
 
 // ============ DERMAGA KARIR ============
@@ -375,7 +512,7 @@ function applyJob(id) {
   const job = State.allJobs().find(j => j.id === id);
   if (!job) return;
   if (State.applications.some(a => a.jobId === id)) { showToast('Sudah dilamar!', 'yellow'); return; }
-  State.applications.push({ jobId: id, title: job.title, company: job.company, appliedAt: new Date().toISOString(), status: 'Terkirim' });
+  State.applications.push({ id: Date.now(), jobId: id, title: job.title, company: job.company, appliedAt: new Date().toISOString(), status: 'Terkirim' });
   addNotification('Lamaran Terkirim', `Lamaran untuk "${job.title}" telah dikirim ke ${job.company}.`);
   closeJob();
   showToast('Lamaran berhasil dikirim! ✅', 'success');
@@ -385,6 +522,7 @@ function applyJob(id) {
 // ============ NOTIFICATIONS ============
 function toggleNotifications() {
   const panel = document.getElementById('notifPanel');
+  if (!panel) return;
   if (panel.classList.contains('show')) { panel.classList.remove('show'); return; }
   const notifs = State.notifications.length ? State.notifications : [{ title:'Selamat Datang', text:'Belum ada notifikasi. Lengkapi profil dan ambil kelas.', time:'—' }];
   panel.innerHTML = `<div style="padding:14px 16px;border-bottom:1px solid var(--gray-200);font-weight:700;color:var(--blue-900);">🔔 Radar Karir</div>` +
@@ -718,28 +856,66 @@ async function finishLegalitas() {
   legalitasState = null;
   document.getElementById('legalitasWizard').innerHTML = '';
 }
+
 function renderPosts() {
   const el = document.getElementById('postList');
   if (!el) return;
-  if (!State.posts.length) { el.innerHTML = '<p style="color:var(--gray-500);padding:12px;">Belum ada postingan. Jadilah yang pertama!</p>'; return; }
-  el.innerHTML = State.posts.map(p => `<div class="forum-post">
-    <div class="post-header">
-      <div class="avatar">${escapeHtml(p.author.charAt(0).toUpperCase())}</div>
-      <div><strong>${escapeHtml(p.author)}</strong><small>${new Date(p.time).toLocaleString('id-ID')}</small></div>
-    </div>
-    <p>${escapeHtml(p.text)}</p>
-    <div class="post-actions"><span>💬 ${p.replies || 0} balasan</span><span>❤️ ${p.likes || 0} suka</span></div>
-  </div>`).join('');
+  if (!State.posts.length) { 
+    el.innerHTML = '<p style="color:var(--gray-500);padding:12px;">Belum ada postingan. Jadilah yang pertama!</p>'; 
+    return; 
+  }
+  el.innerHTML = State.posts.map(p => {
+    const isOwner = p.author === State.user.name;
+    return `<div class="forum-post">
+      <div class="post-header">
+        <div class="avatar">${escapeHtml(p.author.charAt(0).toUpperCase())}</div>
+        <div style="flex:1;">
+          <strong>${escapeHtml(p.author)}</strong>
+          <small>${new Date(p.time).toLocaleString('id-ID')}${p.editedAt ? ' • diedit' : ''}</small>
+        </div>
+      </div>
+      <p>${escapeHtml(p.text)}</p>
+      <div class="post-actions" style="flex-wrap:wrap;">
+        <span>💬 ${p.replies || 0} balasan</span>
+        <span>❤️ ${p.likes || 0} suka</span>
+        ${isOwner ? `
+          <button onclick="editPost(${p.id})" style="background:none;border:none;color:var(--blue-600);font-size:12px;cursor:pointer;font-weight:600;padding:0;">✏️ Edit</button>
+          <button onclick="deletePost(${p.id})" style="background:none;border:none;color:#dc2626;font-size:12px;cursor:pointer;font-weight:600;padding:0;">🗑️ Hapus</button>
+        ` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 function createPost() {
   const input = document.getElementById('postInput');
   const text = input.value.trim();
   if (!text) { showToast('Postingan kosong!', 'error'); return; }
-  State.posts.unshift({ author: State.user.name, text, time: new Date().toISOString(), replies:0, likes:0 });
+  State.posts.unshift({ id: Date.now(), author: State.user.name, text, time: new Date().toISOString(), replies:0, likes:0 });
   State.save();
   input.value = '';
   renderPosts();
   showToast('Postingan berhasil dibuat!', 'success');
+}
+function editPost(id) {
+  const post = State.posts.find(p => p.id === id);
+  if (!post) return;
+  openEditModal('✏️ Edit Postingan', [
+    { name:'text', label:'Isi Postingan', type:'textarea', value: post.text }
+  ], (data) => {
+    if (!data.text) { showToast('Isi tidak boleh kosong!', 'error'); return false; }
+    post.text = data.text;
+    post.editedAt = new Date().toISOString();
+    State.save();
+    renderPosts();
+    showToast('Postingan diperbarui! ✅', 'success');
+  });
+}
+function deletePost(id) {
+  if (!confirm('Hapus postingan ini?')) return;
+  State.posts = State.posts.filter(p => p.id !== id);
+  State.save();
+  renderPosts();
+  showToast('Postingan dihapus.', 'yellow');
 }
 async function submitPermodalan() {
   const fileInput = document.getElementById('permodalanFile');
@@ -786,7 +962,8 @@ async function renderPaspor() {
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
       <button class="btn btn-primary" onclick="previewCV()">📄 Preview & Unduh CV</button>
       <button class="btn btn-yellow" onclick="openUploadModal()">➕ Tambah Portofolio</button>
-      <button class="btn btn-ghost" onclick="openAvatarUpload()">🖼️ Ganti Foto Profil</button>
+      <button class="btn btn-ghost" onclick="openAvatarUpload()">🖼️ Ganti Foto</button>
+      <button class="btn btn-ghost" onclick="editYuwanaProfile()">✏️ Edit Profil</button>
     </div>
     <h3 class="section-title">🏅 Lencana Keahlian</h3>
     ${badges.length ? `<div style="display:flex;gap:16px;flex-wrap:wrap;">
@@ -814,13 +991,11 @@ async function renderPaspor() {
     ` : ''}
   `;
 
-  // Load avatar image
   if (State.user.avatarId) {
     const url = await getStoredFileUrl(State.user.avatarId);
     const el = document.getElementById('avatarDisplay');
     if (el && url) el.innerHTML = `<img src="${url}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
   }
-  // Load portfolio images
   for (const p of State.portfolio) {
     if (p.dbId) {
       const url = await getStoredFileUrl(p.dbId);
@@ -873,7 +1048,10 @@ async function viewPortfolio(dbId) {
   document.getElementById('fileViewContent').innerHTML = `
     <h3 style="margin-bottom:12px;">${escapeHtml(title)}</h3>
     <img src="${url}" alt="${escapeHtml(title)}" style="width:100%;border-radius:8px;">
-    <button class="btn btn-ghost btn-block" style="margin-top:16px;color:#dc2626;border-color:#fca5a5;" onclick="deletePortfolio(${dbId})">🗑️ Hapus Portofolio</button>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="editPortfolio(${dbId})">✏️ Edit Judul</button>
+      <button class="btn btn-ghost" style="flex:1;color:#dc2626;border-color:#fca5a5;" onclick="deletePortfolio(${dbId})">🗑️ Hapus</button>
+    </div>
   `;
   document.getElementById('fileViewModal').classList.add('active');
 }
@@ -968,23 +1146,44 @@ function showPerusahaanTab(tab) {
   if (tab === 'post') renderPostJob();
   if (tab === 'lamaran') renderLamaran();
   if (tab === 'verifikasi') renderVerifikasi();
+  setBottomNavActive(tab);
+  document.querySelector('.sidebar.open')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('show');
 }
+
 function renderPerusahaanOverview() {
   const myJobs = State.customJobs;
   const apps = State.applications;
   document.getElementById('perusahaan-overview').innerHTML = `
     <div class="passport-header" style="background:linear-gradient(135deg,#d97706,#f59e0b);">
       <div class="avatar">${escapeHtml(State.user.name.charAt(0).toUpperCase())}</div>
-      <div><h2>${escapeHtml(State.user.name)}</h2><p>✅ Tier KYC Terverifikasi</p></div>
+      <div style="flex:1;min-width:180px;">
+        <h2>${escapeHtml(State.user.name)}</h2>
+        <p>✅ Tier KYC Terverifikasi</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="editPerusahaanProfile()" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.4);align-self:center;">✏️ Edit Profil</button>
     </div>
     <div class="grid-4">
-      <div class="stat-card"><div class="stat-icon">📝</div><div><strong>${myJobs.length}</strong><span>Lowongan Diposting</span></div></div>
-      <div class="stat-card"><div class="stat-icon">📥</div><div><strong>${apps.length}</strong><span>Lamaran Masuk</span></div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div><strong>${State.verifiedEmployees.length}</strong><span>Verifikasi Diberikan</span></div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div><strong>4.8</strong><span>Rating Perusahaan</span></div></div>
+      <div class="stat-card"><div class="stat-icon">📝</div><div><strong>${myJobs.length}</strong><span>Lowongan</span></div></div>
+      <div class="stat-card"><div class="stat-icon">📥</div><div><strong>${apps.length}</strong><span>Lamaran</span></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div><strong>${State.verifiedEmployees.length}</strong><span>Verifikasi</span></div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div><strong>4.8</strong><span>Rating</span></div></div>
     </div>
-    <h3 class="section-title">📋 Lowongan Aktif</h3>
-    ${myJobs.length ? `<div class="card-grid">${myJobs.map(jobCardHTML).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lowongan.</p>'}
+    <h3 class="section-title">📋 Lowongan Aktif Saya</h3>
+    ${myJobs.length ? `<div class="card-grid">${myJobs.map(j => `
+      <div class="job-card" style="cursor:default;">
+        <h4>${escapeHtml(j.title)}</h4>
+        <div class="company">📍 ${escapeHtml(j.region)} • ${escapeHtml(j.type)}</div>
+        <div class="job-tags">
+          <span class="job-tag">${escapeHtml(j.sector)}</span>
+          <span class="job-tag yellow">💰 ${escapeHtml(j.salary)}</span>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" style="flex:1;min-width:80px;" onclick="editJob(${j.id})">✏️ Edit</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;min-width:80px;color:#dc2626;border-color:#fca5a5;" onclick="deleteJob(${j.id})">🗑️ Hapus</button>
+        </div>
+      </div>
+    `).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lowongan. Klik "Post Lowongan" untuk mulai.</p>'}
   `;
 }
 function renderPostJob() {
@@ -1031,23 +1230,76 @@ async function postJob() {
   showToast('Lowongan berhasil diposting! ✅', 'success');
   showPerusahaanTab('overview');
 }
+function editJob(jobId) {
+  const job = State.customJobs.find(j => j.id === jobId);
+  if (!job) return;
+  openEditModal('✏️ Edit Lowongan', [
+    { name:'title', label:'Judul Posisi', value: job.title },
+    { name:'sector', label:'Sektor', type:'select', value: job.sector, options: SECTORS.slice(1) },
+    { name:'region', label:'Wilayah', type:'select', value: job.region, options: REGIONS.slice(1) },
+    { name:'salary', label:'Gaji', value: job.salary },
+    { name:'type', label:'Tipe Kerja', type:'select', value: job.type, options: ['Full-time','Part-time','Kontrak','Magang'] },
+    { name:'desc', label:'Deskripsi', type:'textarea', value: job.desc }
+  ], (data) => {
+    if (!data.title || !data.desc) { showToast('Judul & deskripsi wajib!', 'error'); return false; }
+    Object.assign(job, data);
+    State.save();
+    showPerusahaanTab('overview');
+    showToast('Lowongan diperbarui! ✅', 'success');
+  });
+}
+function deleteJob(jobId) {
+  if (!confirm('Hapus lowongan ini? Lamaran yang sudah masuk akan tetap tersimpan.')) return;
+  State.customJobs = State.customJobs.filter(j => j.id !== jobId);
+  State.save();
+  showPerusahaanTab('overview');
+  showToast('Lowongan dihapus.', 'yellow');
+}
+
 function renderLamaran() {
   const apps = State.applications;
   document.getElementById('perusahaan-lamaran').innerHTML = `
     <h3 class="section-title">📥 Lamaran Masuk (${apps.length})</h3>
-    ${apps.length ? `<div class="card-grid">${apps.map(a => `
-      <div class="job-card">
-        <h4>${escapeHtml(a.title)}</h4>
-        <p style="font-size:13px;color:var(--gray-600);">Pelamar: <strong>${escapeHtml(State.user.name)}</strong></p>
-        <div class="job-tags"><span class="job-tag">${new Date(a.appliedAt).toLocaleDateString('id-ID')}</span></div>
-        <div style="margin-top:12px;display:flex;gap:6px;">
-          <button class="btn btn-primary btn-sm" onclick="showToast('CV dibuka (simulasi dekripsi E2E)','success')">🔓 Buka CV</button>
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Status diubah ke Shortlist','success')">⭐ Shortlist</button>
+    ${apps.length ? `<div class="card-grid">${apps.map(a => {
+      const job = State.allJobs().find(j => j.id === a.jobId);
+      return `<div class="job-card" style="cursor:default;">
+        <h4>${escapeHtml(job?.title || a.title || 'Lowongan')}</h4>
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:8px;">Pelamar: <strong>${escapeHtml(State.user.name)}</strong></p>
+        <div class="job-tags">
+          <span class="job-tag">📅 ${new Date(a.appliedAt).toLocaleDateString('id-ID')}</span>
         </div>
-      </div>
-    `).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lamaran.</p>'}
+        <div class="form-group" style="margin-top:12px;margin-bottom:8px;">
+          <label style="font-size:11px;">Status Lamaran</label>
+          <select onchange="updateApplicationStatus(${a.id}, this.value)" style="padding:8px 12px;border-radius:8px;border:1.5px solid var(--gray-300);font-family:inherit;font-size:13px;width:100%;">
+            ${['Terkirim','Dibaca','Shortlist','Interview','Diterima','Ditolak'].map(s => 
+              `<option ${s===a.status?'selected':''}>${s}</option>`
+            ).join('')}
+          </select>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" style="flex:1;min-width:90px;" onclick="showToast('CV dibuka (simulasi dekripsi E2E)','success')">🔓 Buka CV</button>
+          <button class="btn btn-ghost btn-sm" style="color:#dc2626;border-color:#fca5a5;" onclick="deleteApplication(${a.id})">🗑️</button>
+        </div>
+      </div>`;
+    }).join('')}</div>` : '<p style="color:var(--gray-500);">Belum ada lamaran.</p>'}
   `;
 }
+function updateApplicationStatus(appId, newStatus) {
+  const app = State.applications.find(a => a.id === appId);
+  if (!app) return;
+  app.status = newStatus;
+  app.updatedAt = new Date().toISOString();
+  State.save();
+  showToast(`Status diubah ke "${newStatus}"`, 'success');
+}
+function deleteApplication(appId) {
+  if (!confirm('Hapus lamaran ini dari daftar?')) return;
+  State.applications = State.applications.filter(a => a.id !== appId);
+  State.save();
+  renderLamaran();
+  showToast('Lamaran dihapus.', 'yellow');
+}
+
 function renderVerifikasi() {
   document.getElementById('perusahaan-verifikasi').innerHTML = `
     <div class="card" style="margin-bottom:16px;">
@@ -1057,10 +1309,17 @@ function renderVerifikasi() {
       <button class="btn btn-primary" onclick="submitVerifikasi()">✅ Kirim Verifikasi</button>
     </div>
     <h3 class="section-title">Riwayat Verifikasi (${State.verifiedEmployees.length})</h3>
-    ${State.verifiedEmployees.length ? State.verifiedEmployees.map(v => `<div class="card" style="margin-bottom:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div><strong>${escapeHtml(v.employee)}</strong><br><small style="color:var(--gray-500);">${escapeHtml(v.comment)}</small></div>
+    ${State.verifiedEmployees.length ? State.verifiedEmployees.map((v, i) => `<div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:160px;">
+          <strong>${escapeHtml(v.employee)}</strong><br>
+          <small style="color:var(--gray-500);">${escapeHtml(v.comment)}</small>
+        </div>
         <span class="job-tag green">✅ Centang Biru</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:10px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="editVerifikasi(${i})">✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;color:#dc2626;border-color:#fca5a5;" onclick="deleteVerifikasi(${i})">🗑️ Hapus</button>
       </div>
     </div>`).join('') : '<p style="color:var(--gray-500);">Belum ada verifikasi.</p>'}
   `;
@@ -1074,6 +1333,46 @@ function submitVerifikasi() {
   showToast(`Verifikasi untuk ${name} berhasil dikirim!`, 'success');
   renderVerifikasi();
 }
+function editVerifikasi(idx) {
+  const v = State.verifiedEmployees[idx];
+  if (!v) return;
+  openEditModal('✏️ Edit Verifikasi', [
+    { name:'employee', label:'Nama Kandidat', value: v.employee },
+    { name:'comment', label:'Ulasan Kinerja', type:'textarea', value: v.comment }
+  ], (data) => {
+    if (!data.employee) { showToast('Nama wajib!', 'error'); return false; }
+    v.employee = data.employee;
+    v.comment = data.comment;
+    v.editedAt = new Date().toISOString();
+    State.save();
+    renderVerifikasi();
+    showToast('Verifikasi diperbarui! ✅', 'success');
+  });
+}
+function deleteVerifikasi(idx) {
+  if (!confirm('Hapus verifikasi ini?')) return;
+  State.verifiedEmployees.splice(idx, 1);
+  State.save();
+  renderVerifikasi();
+  showToast('Verifikasi dihapus.', 'yellow');
+}
+function editPerusahaanProfile() {
+  openEditModal('✏️ Edit Profil Perusahaan', [
+    { name:'name', label:'Nama Perusahaan / UMKM', value: State.user.name },
+    { name:'email', label:'Email', type:'email', value: State.user.email || '' },
+    { name:'phone', label:'No. Telepon', type:'tel', value: State.user.phone || '' },
+    { name:'address', label:'Alamat', type:'textarea', value: State.user.address || '' },
+    { name:'about', label:'Tentang Perusahaan', type:'textarea', value: State.user.about || '' }
+  ], (data) => {
+    if (!data.name) { showToast('Nama wajib diisi!', 'error'); return false; }
+    Object.assign(State.user, data);
+    State.save();
+    document.getElementById('perusahaanName').textContent = data.name;
+    document.getElementById('perusahaanAvatar').textContent = data.name.charAt(0).toUpperCase();
+    renderPerusahaanOverview();
+    showToast('Profil perusahaan diperbarui! ✅', 'success');
+  });
+}
 
 // ============ ADMIN DASHBOARD ============
 function showAdminTab(tab) {
@@ -1086,6 +1385,9 @@ function showAdminTab(tab) {
   if (tab === 'overview') renderAdminOverview();
   if (tab === 'bigdata') renderBigData();
   if (tab === 'verifikasi') renderAdminVerifikasi();
+  setBottomNavActive(tab);
+  document.querySelector('.sidebar.open')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('show');
 }
 function renderAdminOverview() {
   const totalJobs = State.allJobs().length;
