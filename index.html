@@ -2,9 +2,10 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TENGKAYU-LINK — Navigasi Masa Depan Karir & Usaha</title>
 <meta name="description" content="Ekosistem terintegrasi untuk pencari kerja, pengembangan keahlian vokasi, dan inkubasi UMKM lokal di Bumi Paguntaka.">
+<meta name="theme-color" content="#1e3a8a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -183,7 +184,7 @@
   </div>
 </div>
 
-<!-- DASHBOARD YUWANA -->
+<!-- ==================== DASHBOARD YUWANA ==================== -->
 <div id="page-yuwana" class="page dashboard-page">
   <aside class="sidebar">
     <div class="sidebar-logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
@@ -202,6 +203,7 @@
   </aside>
   <main class="dashboard-main">
     <header class="dash-header">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
       <h1 id="yuwanaTabTitle">Overview</h1>
       <div class="dash-header-actions">
         <button class="icon-btn" onclick="toggleNotifications()" title="Radar Karir">🔔<span class="notif-dot" id="notifDot"></span></button>
@@ -219,7 +221,7 @@
   </main>
 </div>
 
-<!-- DASHBOARD PERUSAHAAN -->
+<!-- ==================== DASHBOARD PERUSAHAAN ==================== -->
 <div id="page-perusahaan" class="page dashboard-page">
   <aside class="sidebar">
     <div class="sidebar-logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
@@ -237,6 +239,7 @@
   </aside>
   <main class="dashboard-main">
     <header class="dash-header">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
       <h1 id="perusahaanTabTitle">Overview</h1>
       <div class="dash-header-actions"><button class="icon-btn" onclick="toggleAIChat()">🤖</button></div>
     </header>
@@ -249,7 +252,7 @@
   </main>
 </div>
 
-<!-- DASHBOARD ADMIN -->
+<!-- ==================== DASHBOARD ADMIN ==================== -->
 <div id="page-admin" class="page dashboard-page">
   <aside class="sidebar">
     <div class="sidebar-logo"><span class="logo-icon">⬢</span><span class="logo-text">TENGKAYU<span class="logo-accent">-LINK</span></span></div>
@@ -266,6 +269,7 @@
   </aside>
   <main class="dashboard-main">
     <header class="dash-header">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
       <h1 id="adminTabTitle">Overview</h1>
       <div class="dash-header-actions"><button class="icon-btn" onclick="toggleAIChat()">🤖</button></div>
     </header>
@@ -277,7 +281,7 @@
   </main>
 </div>
 
-<!-- ========== MODALS ========== -->
+<!-- ==================== MODALS ==================== -->
 <div id="courseModal" class="modal-overlay">
   <div class="modal-box modal-lg">
     <button class="modal-close" onclick="closeCourse()">×</button>
@@ -305,7 +309,7 @@
   </div>
 </div>
 
-<!-- NEW: Upload Portfolio Modal -->
+<!-- Upload Portfolio Modal -->
 <div id="uploadModal" class="modal-overlay">
   <div class="modal-box">
     <button class="modal-close" onclick="closeUploadModal()">×</button>
@@ -324,7 +328,7 @@
   </div>
 </div>
 
-<!-- NEW: File Viewer Modal -->
+<!-- File Viewer Modal -->
 <div id="fileViewModal" class="modal-overlay">
   <div class="modal-box modal-lg">
     <button class="modal-close" onclick="closeFileView()">×</button>
@@ -332,7 +336,20 @@
   </div>
 </div>
 
-<!-- AI CHAT -->
+<!-- ==================== EDIT MODAL (GENERIC CRUD) ==================== -->
+<div id="editModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeEditModal()">×</button>
+    <h2 class="edit-title" style="color:var(--blue-900);margin-bottom:16px;">Edit</h2>
+    <div class="edit-body"></div>
+    <div style="display:flex;gap:8px;margin-top:20px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="closeEditModal()">Batal</button>
+      <button class="btn btn-primary edit-save" style="flex:2;">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI CHAT ==================== -->
 <div class="ai-chat">
   <div id="aiPanel" class="ai-panel">
     <div class="ai-header">
@@ -358,6 +375,10 @@
 </div>
 
 <div id="toast" class="toast"></div>
+
+<!-- ==================== MOBILE: SIDEBAR OVERLAY + BOTTOM NAV ==================== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<nav class="bottom-nav" id="bottomNav"></nav>
 
 <!-- LOAD ORDER: db.js DULU, lalu script.js -->
 <script src="db.js"></script>
